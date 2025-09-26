@@ -4,7 +4,7 @@ class UserModel {
   final String email;
   final String role; // 'orang_tua' or 'kader_posyandu'
 
-  UserModel({
+  const UserModel({
     required this.uid,
     required this.name,
     required this.email,
@@ -15,18 +15,12 @@ class UserModel {
   factory UserModel.fromMap(Map<String, dynamic> data, String documentId) {
     return UserModel(
       uid: documentId,
-      name: data['name'] ?? '',
-      email: data['email'] ?? '',
-      role: data['role'] ?? 'orang_tua',
+      name: (data['name'] ?? '').toString(),
+      email: (data['email'] ?? '').toString(),
+      role: (data['role'] ?? 'orang_tua').toString(),
     );
   }
 
   // Method to convert a UserModel to a map (e.g., for writing to Firestore)
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'email': email,
-      'role': role,
-    };
-  }
+  Map<String, dynamic> toMap() => {'name': name, 'email': email, 'role': role};
 }

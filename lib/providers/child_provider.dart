@@ -10,15 +10,14 @@ class ChildProvider with ChangeNotifier {
   ChildModel? get activeChild => _activeChild;
   bool get isLoading => _isLoading;
 
-  // TODO: Fetch children from Firestore
+  // TODO: Implementasi fetch children dari Firestore
 
   Future<void> addChild(ChildModel child) async {
     _isLoading = true;
     notifyListeners();
-    // Dummy delay
     await Future.delayed(const Duration(seconds: 1));
     final newChild = ChildModel(
-      id: DateTime.now().toIso8601String(), // dummy id
+      id: DateTime.now().toIso8601String(),
       nik: child.nik,
       name: child.name,
       age: child.age,
@@ -37,5 +36,5 @@ class ChildProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO: Add update child logic
+  // TODO: Tambahkan logic update child
 }

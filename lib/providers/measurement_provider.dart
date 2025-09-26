@@ -15,7 +15,7 @@ class MeasurementProvider with ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    await Future.delayed(const Duration(seconds: 1)); // Dummy delay
+    await Future.delayed(const Duration(seconds: 1));
 
     if (!_measurements.containsKey(measurement.childId)) {
       _measurements[measurement.childId] = [];
@@ -25,5 +25,5 @@ class MeasurementProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO: Fetch measurements from Firestore
+  // TODO: Implementasi fetch measurements dari Firestore
 }

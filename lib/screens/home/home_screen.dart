@@ -33,7 +33,9 @@ class HomeScreen extends StatelessWidget {
               ),
               Text(
                 "Nama Pengguna", // Replace with actual user name from AuthProvider
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 24),
 
@@ -45,7 +47,11 @@ class HomeScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     children: [
-                      Icon(Icons.lightbulb_outline, color: Colors.blue.shade800, size: 32),
+                      Icon(
+                        Icons.lightbulb_outline,
+                        color: Colors.blue.shade800,
+                        size: 32,
+                      ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(
@@ -53,7 +59,11 @@ class HomeScreen extends StatelessWidget {
                           children: [
                             Text(
                               "Tips Gizi Hari Ini",
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.blue.shade800),
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue.shade800,
+                                  ),
                             ),
                             const SizedBox(height: 4),
                             Text(
@@ -68,21 +78,23 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              
+
               // Children List Header
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     "Daftar Anak",
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   TextButton(
                     onPressed: () {
                       // TODO: View All Children
                     },
                     child: const Text("Lihat Semua"),
-                  )
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -94,7 +106,9 @@ class HomeScreen extends StatelessWidget {
                     return const Center(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 32.0),
-                        child: Text("Belum ada data anak. Tekan tombol + untuk menambah."),
+                        child: Text(
+                          "Belum ada data anak. Tekan tombol + untuk menambah.",
+                        ),
                       ),
                     );
                   }

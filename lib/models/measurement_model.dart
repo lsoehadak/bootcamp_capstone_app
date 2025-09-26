@@ -7,31 +7,63 @@ class MeasurementModel {
   final double headCircumference;
   final String statusGizi; // e.g., 'Hijau', 'Kuning', 'Merah'
 
-  MeasurementModel({
+  const MeasurementModel({
     this.id,
     required this.childId,
     required this.date,
     required this.weight,
     required this.height,
     required this.headCircumference,
-    this.statusGizi = 'Hijau', // Default dummy value
+    this.statusGizi = 'Hijau',
   });
 
-  factory MeasurementModel.fromMap(Map<String, dynamic> data, String documentId) {
+  factory MeasurementModel.fromMap(
+    Map<String, dynamic> data,
+    String documentId,
+  ) {
+    dynamic rawDate = data['date'];
+    DateTime parsedDate;
+    try {
+      // Firestore Timestamp has toDate(), otherwise handle string/int
+      if (rawDate == null) {
+        parsedDate = DateTime.now();
+      } else if (rawDate is DateTime) {
+        parsedDate = rawDate;
+      } else if (rawDate is Map && rawDate['_seconds'] != null) {
+        // Serialized timestamp map
+        parsedDate = DateTime.fromMillisecondsSinceEpoch(
+          (rawDate['_seconds'] as int) * 1000,
+        );
+      } else if (rawDate is int) {
+        parsedDate = DateTime.fromMillisecondsSinceEpoch(rawDate);
+      } else {
+        parsedDate = DateTime.tryParse(rawDate.toString()) ?? DateTime.now();
+      }
+    } catch (_) {
+      parsedDate = DateTime.now();
+    }
+
+    double parseDouble(dynamic v) {
+      if (v == null) return 0.0;
+      if (v is num) return v.toDouble();
+      return double.tryParse(v.toString()) ?? 0.0;
+    }
+
     return MeasurementModel(
       id: documentId,
-      childId: data['childId'] ?? '',
-      date: (data['date']).toDate(),
-      weight: (data['weight'] ?? 0.0).toDouble(),
-      height: (data['height'] ?? 0.0).toDouble(),
-      headCircumference: (data['headCircumference'] ?? 0.0).toDouble(),
-      statusGizi: data['statusGizi'] ?? 'Hijau',
+      childId: (data['childId'] ?? '').toString(),
+      date: parsedDate,
+      weight: parseDouble(data['weight']),
+      height: parseDouble(data['height']),
+      headCircumference: parseDouble(data['headCircumference']),
+      statusGizi: (data['statusGizi'] ?? 'Hijau').toString(),
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'childId': childId,
+      // When writing to Firestore, it's fine to pass DateTime — the plugin handles conversion
       'date': date,
       'weight': weight,
       'height': height,

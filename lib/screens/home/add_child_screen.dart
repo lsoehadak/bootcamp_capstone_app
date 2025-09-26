@@ -32,22 +32,29 @@ class _AddChildScreenState extends State<AddChildScreen> {
   }
 
   Future<void> _saveChild() async {
-    if (_formKey.currentState!.validate()) {
-      final newChild = ChildModel(
-        nik: _nikController.text,
-        name: _nameController.text,
-        age: int.parse(_ageController.text),
-        gender: _selectedGender,
-        weight: double.parse(_weightController.text),
-        height: double.parse(_heightController.text),
-        headCircumference: double.parse(_headCircumferenceController.text),
-      );
-      await Provider.of<ChildProvider>(
-        context,
-        listen: false,
-      ).addChild(newChild);
-      Navigator.of(context).pop();
-    }
+    if (!_formKey.currentState!.validate()) return;
+
+    int? parseIntSafe(String value) => int.tryParse(value);
+    double? parseDoubleSafe(String value) => double.tryParse(value);
+
+    final age = parseIntSafe(_ageController.text) ?? 0;
+    final weight = parseDoubleSafe(_weightController.text) ?? 0.0;
+    final height = parseDoubleSafe(_heightController.text) ?? 0.0;
+    final headCirc = parseDoubleSafe(_headCircumferenceController.text) ?? 0.0;
+
+    final newChild = ChildModel(
+      nik: _nikController.text.trim(),
+      name: _nameController.text.trim(),
+      age: age,
+      gender: _selectedGender,
+      weight: weight,
+      height: height,
+      headCircumference: headCirc,
+    );
+
+    final provider = Provider.of<ChildProvider>(context, listen: false);
+    await provider.addChild(newChild);
+    if (mounted) Navigator.of(context).pop();
   }
 
   @override
@@ -74,7 +81,7 @@ class _AddChildScreenState extends State<AddChildScreen> {
                 keyboardType: TextInputType.number,
               ),
               DropdownButtonFormField<String>(
-                value: _selectedGender,
+                initialValue: _selectedGender,
                 decoration: const InputDecoration(labelText: 'Gender'),
                 items: ['Laki-laki', 'Perempuan'].map((String value) {
                   return DropdownMenuItem<String>(
@@ -107,9 +114,22 @@ class _AddChildScreenState extends State<AddChildScreen> {
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _saveChild,
-                child: const Text('Simpan'),
+              Consumer<ChildProvider>(
+                builder: (context, provider, child) {
+                  return ElevatedButton(
+                    onPressed: provider.isLoading ? null : _saveChild,
+                    child: provider.isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text('Simpan'),
+                  );
+                },
               ),
             ],
           ),

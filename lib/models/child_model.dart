@@ -13,7 +13,7 @@ class ChildModel {
   final int? motherAgeAtBirth;
   final String? sanitation;
 
-  ChildModel({
+  const ChildModel({
     this.id,
     required this.nik,
     required this.name,
@@ -28,18 +28,35 @@ class ChildModel {
   });
 
   factory ChildModel.fromMap(Map<String, dynamic> data, String documentId) {
+    double parseDouble(dynamic v) {
+      if (v == null) return 0.0;
+      if (v is num) return v.toDouble();
+      return double.tryParse(v.toString()) ?? 0.0;
+    }
+
+    int parseInt(dynamic v) {
+      if (v == null) return 0;
+      if (v is int) return v;
+      if (v is num) return v.toInt();
+      return int.tryParse(v.toString()) ?? 0;
+    }
+
     return ChildModel(
       id: documentId,
-      nik: data['nik'] ?? '',
-      name: data['name'] ?? '',
-      age: data['age'] ?? 0,
-      gender: data['gender'] ?? '',
-      weight: (data['weight'] ?? 0.0).toDouble(),
-      height: (data['height'] ?? 0.0).toDouble(),
-      headCircumference: (data['headCircumference'] ?? 0.0).toDouble(),
-      birthHistory: data['birthHistory'],
-      motherAgeAtBirth: data['motherAgeAtBirth'],
-      sanitation: data['sanitation'],
+      nik: (data['nik'] ?? '').toString(),
+      name: (data['name'] ?? '').toString(),
+      age: parseInt(data['age']),
+      gender: (data['gender'] ?? '').toString(),
+      weight: parseDouble(data['weight']),
+      height: parseDouble(data['height']),
+      headCircumference: parseDouble(data['headCircumference']),
+      birthHistory: data['birthHistory']?.toString(),
+      motherAgeAtBirth: data['motherAgeAtBirth'] is int
+          ? data['motherAgeAtBirth'] as int
+          : (data['motherAgeAtBirth'] is num
+                ? (data['motherAgeAtBirth'] as num).toInt()
+                : null),
+      sanitation: data['sanitation']?.toString(),
     );
   }
 
@@ -52,9 +69,9 @@ class ChildModel {
       'weight': weight,
       'height': height,
       'headCircumference': headCircumference,
-      'birthHistory': birthHistory,
-      'motherAgeAtBirth': motherAgeAtBirth,
-      'sanitation': sanitation,
+      if (birthHistory != null) 'birthHistory': birthHistory,
+      if (motherAgeAtBirth != null) 'motherAgeAtBirth': motherAgeAtBirth,
+      if (sanitation != null) 'sanitation': sanitation,
     };
   }
 }

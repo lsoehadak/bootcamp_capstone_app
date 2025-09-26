@@ -29,14 +29,14 @@ class App extends StatelessWidget {
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
-              shape: MaterialStateProperty.all(
+              shape: WidgetStateProperty.all(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),
-              padding: MaterialStateProperty.all(
+              padding: WidgetStateProperty.all(
                 const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
               ),
-              backgroundColor: MaterialStateProperty.all(Colors.blue),
-              foregroundColor: MaterialStateProperty.all(Colors.white),
+              backgroundColor: WidgetStateProperty.all(Colors.blue),
+              foregroundColor: WidgetStateProperty.all(Colors.white),
             ),
           ),
           cardTheme: CardThemeData(
@@ -62,14 +62,14 @@ class App extends StatelessWidget {
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
-              shape: MaterialStateProperty.all(
+              shape: WidgetStateProperty.all(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),
-              padding: MaterialStateProperty.all(
+              padding: WidgetStateProperty.all(
                 const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
               ),
-              backgroundColor: MaterialStateProperty.all(Colors.blue),
-              foregroundColor: MaterialStateProperty.all(Colors.white),
+              backgroundColor: WidgetStateProperty.all(Colors.blue),
+              foregroundColor: WidgetStateProperty.all(Colors.white),
             ),
           ),
           cardTheme: CardThemeData(

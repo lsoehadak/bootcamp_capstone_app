@@ -8,7 +8,7 @@ class TipsProvider with ChangeNotifier {
     "Pantau berat dan tinggi badan anak secara teratur di Posyandu.",
     "Jaga kebersihan lingkungan dan sanitasi untuk mencegah penyakit.",
     "Lakukan imunisasi lengkap sesuai jadwal yang dianjurkan.",
-    "Stimulasi perkembangan anak dengan bermain dan berinteraksi."
+    "Stimulasi perkembangan anak dengan bermain dan berinteraksi.",
   ];
 
   String get randomTip {
@@ -16,8 +16,8 @@ class TipsProvider with ChangeNotifier {
     return _tips[random.nextInt(_tips.length)];
   }
 
-  // In a real app, you might fetch these from a service
+  // TODO: Jika ingin fetch tips dari service, implementasikan di sini
   Future<void> fetchTips() async {
-    // notifyListeners();
+    // Implementasi fetch tips jika diperlukan
   }
 }
