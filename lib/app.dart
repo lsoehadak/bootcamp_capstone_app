@@ -10,13 +10,22 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
-        final lightTheme = ThemeData(
+        final lightColorScheme = ColorScheme.fromSeed(
+          seedColor: Colors.blue,
           brightness: Brightness.light,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-          scaffoldBackgroundColor: Colors.grey[100],
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.blue,
-            foregroundColor: Colors.white,
+        );
+        final darkColorScheme = ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: Brightness.dark,
+        );
+
+        final lightTheme = ThemeData(
+          colorScheme: lightColorScheme,
+          useMaterial3: true,
+          scaffoldBackgroundColor: lightColorScheme.surface,
+          appBarTheme: AppBarTheme(
+            backgroundColor: lightColorScheme.primary,
+            foregroundColor: lightColorScheme.onPrimary,
             elevation: 0.5,
           ),
           inputDecorationTheme: InputDecorationTheme(
@@ -28,15 +37,13 @@ class App extends StatelessWidget {
             fillColor: Colors.white,
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ButtonStyle(
-              shape: WidgetStateProperty.all(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: lightColorScheme.primary,
+              foregroundColor: lightColorScheme.onPrimary,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
               ),
-              padding: WidgetStateProperty.all(
-                const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-              ),
-              backgroundColor: WidgetStateProperty.all(Colors.blue),
-              foregroundColor: WidgetStateProperty.all(Colors.white),
             ),
           ),
           cardTheme: CardThemeData(
@@ -44,14 +51,19 @@ class App extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
+            color: lightColorScheme.surface,
           ),
         );
 
         final darkTheme = ThemeData(
+          colorScheme: darkColorScheme,
+          useMaterial3: true,
           brightness: Brightness.dark,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
-            brightness: Brightness.dark,
+          scaffoldBackgroundColor: darkColorScheme.surface,
+          appBarTheme: AppBarTheme(
+            backgroundColor: darkColorScheme.primary,
+            foregroundColor: darkColorScheme.onPrimary,
+            elevation: 0.5,
           ),
           inputDecorationTheme: InputDecorationTheme(
             border: OutlineInputBorder(
@@ -59,17 +71,16 @@ class App extends StatelessWidget {
               borderSide: BorderSide.none,
             ),
             filled: true,
+            fillColor: darkColorScheme.surfaceContainerHighest,
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ButtonStyle(
-              shape: WidgetStateProperty.all(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: darkColorScheme.primary,
+              foregroundColor: darkColorScheme.onPrimary,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
               ),
-              padding: WidgetStateProperty.all(
-                const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-              ),
-              backgroundColor: WidgetStateProperty.all(Colors.blue),
-              foregroundColor: WidgetStateProperty.all(Colors.white),
             ),
           ),
           cardTheme: CardThemeData(
@@ -77,6 +88,7 @@ class App extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
+            color: darkColorScheme.surface,
           ),
         );
 
