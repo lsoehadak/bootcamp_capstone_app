@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'app.dart';
 import 'providers/auth_provider.dart';
 import 'providers/child_provider.dart';
+import 'providers/child_tracking_provider.dart';
 import 'providers/measurement_provider.dart';
 import 'providers/theme_provider.dart';
 import 'providers/tips_provider.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => TipsProvider()),
         ChangeNotifierProvider(create: (_) => ChildProvider()),
+        ChangeNotifierProvider(create: (_) => ChildTrackingProvider()),
         ChangeNotifierProvider(create: (_) => MeasurementProvider()),
       ],
       child: const App(),
