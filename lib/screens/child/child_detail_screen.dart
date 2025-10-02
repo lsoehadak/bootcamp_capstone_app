@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/child_provider.dart';
+import '../../providers/child_tracking_provider.dart';
+import '../../models/child_tracking_model.dart';
+import 'add_tracking_screen.dart';
+import 'child_tracking_history_screen.dart';
 
 class ChildDetailScreen extends StatefulWidget {
   const ChildDetailScreen({super.key});
@@ -16,7 +20,7 @@ class _ChildDetailScreenState extends State<ChildDetailScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -280,6 +284,7 @@ class _ChildDetailScreenState extends State<ChildDetailScreen>
                     Tab(text: 'Data Diri'),
                     Tab(text: 'Status'),
                     Tab(text: 'Riwayat'),
+                    Tab(text: 'Tracking'),
                   ],
                 ),
               ),
@@ -292,14 +297,38 @@ class _ChildDetailScreenState extends State<ChildDetailScreen>
                     _buildDataDiriTab(child),
                     _buildStatusTab(child),
                     _buildRiwayatTab(child),
+                    _buildTrackingTab(child),
                   ],
                 ),
               ),
             ],
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              // Navigate to add measurement screen
+            onPressed: () async {
+              final result = await Navigator.of(context)
+                  .push<ChildTrackingModel>(
+                    MaterialPageRoute(
+                      builder: (context) => AddTrackingScreen(child: child),
+                    ),
+                  );
+
+              if (result != null && mounted) {
+                context.read<ChildTrackingProvider>().addTracking(result);
+
+                // Show success message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Data perkembangan berhasil disimpan dengan status: ${result.status}',
+                    ),
+                    backgroundColor: Colors.green,
+                    duration: const Duration(seconds: 3),
+                  ),
+                );
+
+                // Refresh the tab view to show new data
+                setState(() {});
+              }
             },
             backgroundColor: Theme.of(context).colorScheme.primary,
             child: Icon(
@@ -706,5 +735,402 @@ class _ChildDetailScreenState extends State<ChildDetailScreen>
         ],
       ),
     );
+  }
+
+  Widget _buildTrackingTab(dynamic child) {
+    return Consumer<ChildTrackingProvider>(
+      builder: (context, trackingProvider, _) {
+        final trackingHistory = trackingProvider.getTrackingByNik(child.nik);
+        final stats = trackingProvider.getTrackingStats(child.nik);
+        final trends = trackingProvider.getGrowthTrend(child.nik);
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Summary Card
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.timeline,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onPrimaryContainer,
+                          size: 24,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Ringkasan Perkembangan',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onPrimaryContainer,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildQuickStat(
+                            context,
+                            'Total Rekaman',
+                            '${stats['totalRecords']}',
+                            Icons.history,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildQuickStat(
+                            context,
+                            'Status Terakhir',
+                            stats['latestStatus'],
+                            Icons.health_and_safety,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Action Buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        final result = await Navigator.of(context)
+                            .push<ChildTrackingModel>(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    AddTrackingScreen(child: child),
+                              ),
+                            );
+
+                        if (result != null && mounted) {
+                          trackingProvider.addTracking(result);
+
+                          // Show success message
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Data perkembangan berhasil disimpan dengan status: ${result.status}',
+                              ),
+                              backgroundColor: Colors.green,
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+
+                          // Refresh the tab view to show new data
+                          setState(() {});
+                        }
+                      },
+                      icon: const Icon(Icons.add),
+                      label: const Text('Tambah Data'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        foregroundColor: Theme.of(
+                          context,
+                        ).colorScheme.onPrimary,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ChildTrackingHistoryScreen(child: child),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.history),
+                      label: const Text('Lihat Semua'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              if (trackingHistory.isNotEmpty) ...[
+                // Growth Trends (if has multiple records)
+                if (trackingHistory.length >= 2) ...[
+                  Text(
+                    'Tren Pertumbuhan',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondaryContainer,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildTrendIndicator(
+                          context,
+                          'Berat',
+                          trends['weight']!,
+                        ),
+                        _buildTrendIndicator(
+                          context,
+                          'Tinggi',
+                          trends['height']!,
+                        ),
+                        _buildTrendIndicator(
+                          context,
+                          'Lingkar Kepala',
+                          trends['headCirc']!,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+
+                // Recent Records
+                Text(
+                  'Data Terbaru',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ...trackingHistory
+                    .take(3)
+                    .map(
+                      (tracking) => Container(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surfaceContainer,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: tracking.getStatusColor().withOpacity(
+                                  0.1,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                tracking.getStatusIcon(),
+                                color: tracking.getStatusColor(),
+                                size: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _formatDate(tracking.measurementDate),
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${tracking.weight}kg • ${tracking.height}cm • Status: ${tracking.status}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface.withOpacity(0.6),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+              ] else ...[
+                // Empty State
+                Container(
+                  padding: const EdgeInsets.all(32),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainer,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.timeline,
+                        size: 64,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withOpacity(0.3),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Belum Ada Data Tracking',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Mulai tambahkan data pengukuran untuk memantau perkembangan anak',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withOpacity(0.6),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildQuickStat(
+    BuildContext context,
+    String title,
+    String value,
+    IconData icon,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 10,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTrendIndicator(
+    BuildContext context,
+    String label,
+    String trend,
+  ) {
+    Color trendColor;
+    IconData trendIcon;
+
+    switch (trend.toLowerCase()) {
+      case 'naik':
+        trendColor = Colors.green;
+        trendIcon = Icons.trending_up;
+        break;
+      case 'turun':
+        trendColor = Colors.red;
+        trendIcon = Icons.trending_down;
+        break;
+      case 'stabil':
+        trendColor = Colors.blue;
+        trendIcon = Icons.trending_flat;
+        break;
+      default:
+        trendColor = Colors.grey;
+        trendIcon = Icons.help_outline;
+    }
+
+    return Column(
+      children: [
+        Icon(trendIcon, color: trendColor, size: 24),
+        const SizedBox(height: 4),
+        Text(
+          trend,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: trendColor,
+          ),
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 10,
+            color: Theme.of(
+              context,
+            ).colorScheme.onSecondaryContainer.withOpacity(0.7),
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Ags',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des',
+    ];
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 }
