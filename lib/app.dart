@@ -1,4 +1,6 @@
+import 'package:capstone_app/screens/home/home_page.dart';
 import 'package:capstone_app/screens/login/login_page.dart';
+import 'package:capstone_app/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/theme_provider.dart';
@@ -24,12 +26,11 @@ class App extends StatelessWidget {
           // colorScheme: lightColorScheme,
           // useMaterial3: true,
           scaffoldBackgroundColor: Colors.white,
-          fontFamily: 'Montserrat'
-          // appBarTheme: AppBarTheme(
-          //   backgroundColor: lightColorScheme.primary,
-          //   foregroundColor: lightColorScheme.onPrimary,
-          //   elevation: 0.5,
-          // ),
+          fontFamily: 'Montserrat',
+          appBarTheme: AppBarTheme(
+            backgroundColor: Colors.white,
+              titleTextStyle: AppTextStyles.titleText.copyWith(fontSize: 20, fontFamily: 'Montserrat'),
+          ),
           // inputDecorationTheme: InputDecorationTheme(
           //   border: OutlineInputBorder(
           //     borderRadius: BorderRadius.circular(8),
@@ -99,7 +100,7 @@ class App extends StatelessWidget {
           theme: lightTheme,
           // darkTheme: darkTheme,
           themeMode: themeProvider.themeMode,
-          home: const LoginPage(),
+          home: const HomePage(),
           debugShowCheckedModeBanner: false,
         );
       },

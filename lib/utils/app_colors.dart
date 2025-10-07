@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 abstract class AppColors {
-  static const mainThemeColor = Color(0xFF25AAE1);
+  static const mainThemeColor = Color(0xFF259AE1);
   static const borderColor = Color(0xFFDDE5E9);
   static const disabledButtonColor = Color(0xFFB0B0B0);
   static const greenStatusColor = Color(0xFF34A853);

@@ -1,7 +1,7 @@
+import 'package:capstone_app/screens/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
-import '../main_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -50,7 +50,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           'orang_tua',
         );
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const MainScreen()),
+          MaterialPageRoute(builder: (_) => const HomePage()),
         );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
