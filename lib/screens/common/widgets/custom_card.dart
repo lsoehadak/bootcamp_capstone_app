@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class CustomDefaultCard extends StatelessWidget {
   final Widget content;
   final EdgeInsets padding;
+  final Color backgroundColor;
 
   const CustomDefaultCard({
     super.key,
     required this.content,
     this.padding = const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+    this.backgroundColor = Colors.white,
   });
 
   @override
@@ -16,7 +18,7 @@ class CustomDefaultCard extends StatelessWidget {
       width: double.infinity,
       padding: padding,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: backgroundColor,
         borderRadius: const BorderRadius.all(
           Radius.circular(8),
         ),

@@ -1,6 +1,8 @@
 import 'package:capstone_app/screens/analysis_result/analysis_result_page.dart';
 import 'package:capstone_app/screens/common/empty_state_view.dart';
 import 'package:capstone_app/screens/home/widgets/item_analysis_history_card.dart';
+import 'package:capstone_app/screens/input_child_data/input_child_data_page.dart';
+import 'package:capstone_app/screens/profile/profile_page.dart';
 import 'package:capstone_app/utils/app_colors.dart';
 import 'package:capstone_app/utils/app_text_styles.dart';
 import 'package:capstone_app/widgets/name_avatar.dart';
@@ -47,12 +49,10 @@ class _HomePageState extends State<HomePage> {
           // TODO go to analysis page
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const AnalysisResultPage(),
-            ),
+            MaterialPageRoute(builder: (context) => const InputChildDataPage()),
           );
         },
-        shape: CircleBorder(),
+        shape: const CircleBorder(),
         backgroundColor: AppColors.mainThemeColor,
         child: const Icon(Icons.add, color: Colors.white),
       ),
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               children: [
                 // TODO get data from provider
-                NameAvatar(name: 'Luthfi'),
+                const NameAvatar(name: 'Luthfi'),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -97,8 +97,14 @@ class _HomePageState extends State<HomePage> {
                 GestureDetector(
                   onTap: () {
                     // TODO go to setting page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ProfilePage(),
+                      ),
+                    );
                   },
-                  child: CircleAvatar(
+                  child: const CircleAvatar(
                     radius: 18,
                     backgroundColor: Colors.white,
                     child: Icon(
@@ -118,7 +124,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildSearchBar() {
     return Container(
-      padding: EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 16),
+      padding: const EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 16),
       color: AppColors.mainThemeColor,
       child: CustomDefaultTextField(
         controller: _searchController,
@@ -130,7 +136,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildEmptyState() {
-    return EmptyStateView(
+    return const EmptyStateView(
       title: 'Belum Ada Riwayat Analisis',
       message:
           'Untuk mulai melakukan pengecekan dengan menekan tombol +. Riwayat analisa yang disimpan akan muncul di sini',
@@ -139,7 +145,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildLoadedStateView() {
     return ListView.separated(
-      padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 32),
+      padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 32),
       itemBuilder: (context, index) {
         return ItemAnalysisHistoryCard(history: listAnalysisHistory[index]);
       },

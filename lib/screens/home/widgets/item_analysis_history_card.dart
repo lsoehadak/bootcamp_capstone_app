@@ -30,10 +30,10 @@ class ItemAnalysisHistoryCard extends StatelessWidget {
 
   Widget _buildStatusSection() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       decoration: BoxDecoration(
         color: history.nutritionalStatus.color,
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(8),
           bottomRight: Radius.circular(8),
         ),
@@ -50,7 +50,7 @@ class ItemAnalysisHistoryCard extends StatelessWidget {
 
   Widget _buildAnalysisHistorySection() {
     return Padding(
-      padding: EdgeInsetsGeometry.all(12),
+      padding: const EdgeInsetsGeometry.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -83,7 +83,7 @@ class ItemAnalysisHistoryCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Tanggal Analisa', style: AppTextStyles.captionLowEmText),
+              const Text('Tanggal Analisa', style: AppTextStyles.captionLowEmText),
               Text(
                 formatDateToString(history.date),
                 style: AppTextStyles.captionLowEmText,
@@ -107,7 +107,7 @@ class ItemAnalysisHistoryCard extends StatelessWidget {
 
   Widget _buildDetailButton() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -117,7 +117,7 @@ class ItemAnalysisHistoryCard extends StatelessWidget {
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(8),
           bottomRight: Radius.circular(8),
         ),
@@ -131,7 +131,7 @@ class ItemAnalysisHistoryCard extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          Icon(Icons.arrow_forward_ios, size: 12, color: Colors.black),
+          const Icon(Icons.arrow_forward_ios, size: 12, color: Colors.black),
         ],
       ),
     );

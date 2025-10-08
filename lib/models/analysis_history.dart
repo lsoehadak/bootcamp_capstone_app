@@ -10,6 +10,9 @@ class AnalysisHistory {
   final double height;
   final double weight;
   final DateTime date;
+  final int zScore;
+  final String zScoreCategory;
+  final String recommendation;
   final NutritionalStatus nutritionalStatus;
 
   AnalysisHistory({
@@ -20,6 +23,9 @@ class AnalysisHistory {
     required this.height,
     required this.weight,
     required this.date,
+    required this.zScore,
+    required this.zScoreCategory,
+    required this.recommendation,
     required this.nutritionalStatus,
   });
 
@@ -32,6 +38,9 @@ class AnalysisHistory {
       height: (json['height'] as num).toDouble(),
       weight: (json['weight'] as num).toDouble(),
       date: DateTime.parse(json['date'] as String),
+      zScore: json['zScore'] as int,
+      zScoreCategory: json['zScoreCategory'] as String,
+      recommendation: json['recommendation'] as String,
       nutritionalStatus: (json['nutritionalStatus'] as String)
           .toNutritionalStatus(),
     );
@@ -46,6 +55,9 @@ class AnalysisHistory {
       'height': height,
       'weight': weight,
       'date': date.toIso8601String(),
+      'zScore': zScore,
+      'zScoreCategory': zScoreCategory,
+      'recommendation': recommendation,
       'nutritionalStatus': nutritionalStatus.label,
     };
   }

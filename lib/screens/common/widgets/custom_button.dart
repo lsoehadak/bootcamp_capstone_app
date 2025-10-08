@@ -48,7 +48,10 @@ class CustomDefaultButton extends StatelessWidget {
             )
           : Text(
               label,
-              style: AppTextStyles.titleText.copyWith(color: Colors.white),
+              style: AppTextStyles.titleText.copyWith(
+                color: Colors.white,
+                fontSize: 14,
+              ),
             ),
     );
   }
@@ -68,7 +71,7 @@ class CustomCompactOutlinedButton extends StatelessWidget {
     required this.onClick,
     this.isEnabled = true,
     this.radius = 8,
-    this.height = 48,
+    this.height = 36,
     this.textStyle,
   });
 
@@ -81,20 +84,21 @@ class CustomCompactOutlinedButton extends StatelessWidget {
             }
           : null,
       style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         minimumSize: Size(0, height),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radius),
         ),
-        side: BorderSide(color: AppColors.mainThemeColor),
+        side: const BorderSide(color: AppColors.mainThemeColor),
         backgroundColor: Colors.white,
         disabledBackgroundColor: Colors.white,
       ),
       child: Text(
         label,
-        style:
-            textStyle ??
-            AppTextStyles.titleText.copyWith(color: AppColors.mainThemeColor),
+        style: AppTextStyles.bodySmallText.copyWith(
+          color: AppColors.mainThemeColor,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
