@@ -11,7 +11,15 @@ class UiSuccessState<T> extends UiState<T> {
 }
 
 class UiErrorState<T> extends UiState<T> {
-  final String error;
+  final String errorTitle;
+  final String errorMessage;
 
-  UiErrorState(this.error);
+  UiErrorState(this.errorTitle, this.errorMessage);
+}
+
+class UiEmptyState<T> extends UiState<T> {
+  final String title;
+  final String message;
+
+  UiEmptyState(this.title, this.message);
 }

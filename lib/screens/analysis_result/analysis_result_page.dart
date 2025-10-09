@@ -1,6 +1,7 @@
 import 'package:capstone_app/screens/common/widgets/custom_button.dart';
 import 'package:capstone_app/screens/common/widgets/custom_card.dart';
 import 'package:capstone_app/screens/common/widgets/custom_divider.dart';
+import 'package:capstone_app/screens/home/home_page.dart';
 import 'package:capstone_app/utils/app_colors.dart';
 import 'package:capstone_app/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -112,7 +113,13 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
               const SizedBox(height: 24),
               CustomDefaultButton(
                 label: 'Simpan Hasil Analisa',
-                onClick: () {},
+                onClick: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
               ),
             ],
           ),

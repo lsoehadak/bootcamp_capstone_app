@@ -1,3 +1,5 @@
+import 'package:capstone_app/providers/home_provider.dart';
+import 'package:capstone_app/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
@@ -24,12 +26,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => TipsProvider()),
-        ChangeNotifierProvider(create: (_) => ChildProvider()),
-        ChangeNotifierProvider(create: (_) => ChildTrackingProvider()),
-        ChangeNotifierProvider(create: (_) => MeasurementProvider()),
+        Provider(create: (context) => ApiService()),
+        ChangeNotifierProvider(
+          create: (context) => HomeProvider(context.read<ApiService>()),
+        ),
       ],
       child: const App(),
     );

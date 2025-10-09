@@ -1,14 +1,16 @@
-import 'package:capstone_app/screens/analysis_result/analysis_result_page.dart';
+import 'package:capstone_app/models/analysis_history.dart';
+import 'package:capstone_app/providers/home_provider.dart';
 import 'package:capstone_app/screens/common/empty_state_view.dart';
 import 'package:capstone_app/screens/home/widgets/item_analysis_history_card.dart';
 import 'package:capstone_app/screens/input_child_data/input_child_data_page.dart';
 import 'package:capstone_app/screens/profile/profile_page.dart';
 import 'package:capstone_app/utils/app_colors.dart';
 import 'package:capstone_app/utils/app_text_styles.dart';
+import 'package:capstone_app/utils/ui_state.dart';
 import 'package:capstone_app/widgets/name_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../data/dummy_analysis_history_data.dart';
 import '../common/widgets/custom_text_field.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,6 +22,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<HomeProvider>().fetchAnalysisHistoryList();
+    });
+  }
 
   @override
   void dispose() {
@@ -34,19 +44,26 @@ class _HomePageState extends State<HomePage> {
         children: [
           _buildAppBar(),
           _buildSearchBar(),
-          // Expanded(child: _buildEmptyState()),
           Expanded(
-            child: SafeArea(
-              top: false,
-              bottom: true,
-              child: _buildLoadedStateView(),
+            child: Consumer<HomeProvider>(
+              builder: (context, provider, child) {
+                return switch (provider.uiState) {
+                  UiNoneState<List<AnalysisHistory>>() => const SizedBox(),
+                  UiLoadingState<List<AnalysisHistory>>() => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  UiSuccessState<List<AnalysisHistory>>(data: var analysisHistoryList) =>
+                    _buildLoadedStateView(analysisHistoryList),
+                  UiErrorState<List<AnalysisHistory>>() => const SizedBox(),
+                  UiEmptyState<List<AnalysisHistory>>() => _buildEmptyState(),
+                };
+              },
             ),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO go to analysis page
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const InputChildDataPage()),
@@ -130,7 +147,9 @@ class _HomePageState extends State<HomePage> {
         controller: _searchController,
         hint: 'Nama anak...',
         prefixIcon: const Icon(Icons.search),
-        onSubmit: (value) {},
+        onSubmit: (value) {
+          context.read<HomeProvider>().filterAnalysisHistoryList(value);
+        },
       ),
     );
   }
@@ -143,7 +162,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildLoadedStateView() {
+  Widget _buildLoadedStateView(List<AnalysisHistory> listAnalysisHistory) {
     return ListView.separated(
       padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 32),
       itemBuilder: (context, index) {
