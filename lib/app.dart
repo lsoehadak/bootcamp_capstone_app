@@ -1,4 +1,5 @@
 import 'package:capstone_app/screens/home/home_page.dart';
+import 'package:capstone_app/utils/app_colors.dart';
 import 'package:capstone_app/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,9 @@ class App extends StatelessWidget {
         backgroundColor: Colors.white,
         titleTextStyle: AppTextStyles.titleText.copyWith(fontSize: 20, fontFamily: 'Montserrat'),
       ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: AppColors.mainThemeColor,
+      )
     );
 
     return MaterialApp(

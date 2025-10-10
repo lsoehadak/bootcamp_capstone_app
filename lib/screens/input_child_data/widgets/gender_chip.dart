@@ -16,20 +16,23 @@ class GenderChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: BoxDecoration(
-        color: isSelected ? AppColors.mainThemeColor : Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: isSelected ? AppColors.mainThemeColor : AppColors.borderColor,
+    return GestureDetector(
+      onTap: onClick,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.mainThemeColor : Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? AppColors.mainThemeColor : AppColors.borderColor,
+          ),
         ),
-      ),
-      child: Text(
-        label,
-        style: isSelected
-            ? AppTextStyles.bodyHiEmText.copyWith(color: Colors.white)
-            : AppTextStyles.bodyLowEmText,
+        child: Text(
+          label,
+          style: isSelected
+              ? AppTextStyles.bodyHiEmText.copyWith(color: Colors.white)
+              : AppTextStyles.bodyLowEmText,
+        ),
       ),
     );
   }

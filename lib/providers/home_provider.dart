@@ -32,7 +32,7 @@ class HomeProvider extends ChangeNotifier {
       } else {
         _analysisHistoryList.clear();
         _analysisHistoryList.addAll(analysisHistory);
-        _filteredAnalysisHistoryList.addAll(_analysisHistoryList);
+        filterAnalysisHistoryList('');
 
         _uiState = UiSuccessState(_filteredAnalysisHistoryList);
       }
@@ -57,17 +57,12 @@ class HomeProvider extends ChangeNotifier {
     if (_filteredAnalysisHistoryList.isEmpty) {
       _uiState = UiEmptyState(
         'Nama Anak Tidak Ditemukan',
-        'Pastikan kata kunci yang Anda masukkan benar, atau coba dengan kata kunci lainnya',
+        'Pastikan ejaan nama anak yang Anda masukkan benar, atau coba dengan nama anak lainnya',
       );
       notifyListeners();
     } else {
       _uiState = UiSuccessState(_filteredAnalysisHistoryList);
       notifyListeners();
-    }
-
-    // print all _filteredAnalysisHistoryList
-    for (var element in _filteredAnalysisHistoryList) {
-      debugPrint(element.name);
     }
   }
 }

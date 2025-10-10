@@ -11,6 +11,10 @@ import 'package:capstone_app/widgets/name_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/analysis_result_provider.dart';
+import '../../providers/input_child_data_provider.dart';
+import '../../services/api_service.dart';
+import '../analysis_result/analysis_result_page.dart';
 import '../common/widgets/custom_text_field.dart';
 
 class HomePage extends StatefulWidget {
@@ -52,10 +56,16 @@ class _HomePageState extends State<HomePage> {
                   UiLoadingState<List<AnalysisHistory>>() => const Center(
                     child: CircularProgressIndicator(),
                   ),
-                  UiSuccessState<List<AnalysisHistory>>(data: var analysisHistoryList) =>
+                  UiSuccessState<List<AnalysisHistory>>(
+                    data: var analysisHistoryList,
+                  ) =>
                     _buildLoadedStateView(analysisHistoryList),
                   UiErrorState<List<AnalysisHistory>>() => const SizedBox(),
-                  UiEmptyState<List<AnalysisHistory>>() => _buildEmptyState(),
+                  UiEmptyState<List<AnalysisHistory>>(
+                    title: var title,
+                    message: var message,
+                  ) =>
+                    _buildEmptyState(title, message),
                 };
               },
             ),
@@ -66,7 +76,14 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const InputChildDataPage()),
+            MaterialPageRoute(
+              builder: (context) {
+                return ChangeNotifierProvider(
+                  create: (context) => InputChildDataProvider(),
+                  child: const InputChildDataPage(),
+                );
+              },
+            ),
           );
         },
         shape: const CircleBorder(),
@@ -154,19 +171,34 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildEmptyState() {
-    return const EmptyStateView(
-      title: 'Belum Ada Riwayat Analisis',
-      message:
-          'Untuk mulai melakukan pengecekan dengan menekan tombol +. Riwayat analisa yang disimpan akan muncul di sini',
-    );
+  Widget _buildEmptyState(String title, String message) {
+    return EmptyStateView(title: title, message: message);
   }
 
   Widget _buildLoadedStateView(List<AnalysisHistory> listAnalysisHistory) {
     return ListView.separated(
       padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 32),
       itemBuilder: (context, index) {
-        return ItemAnalysisHistoryCard(history: listAnalysisHistory[index]);
+        return ItemAnalysisHistoryCard(
+          history: listAnalysisHistory[index],
+          onClick: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return ChangeNotifierProvider(
+                    create: (context) => AnalysisResultProvider(
+                      listAnalysisHistory[index],
+                      context.read<ApiService>(),
+                    ),
+                    child: const AnalysisResultPage(),
+                  );
+                },
+              ),
+            );
+          },
+          onDelete: () {},
+        );
       },
       separatorBuilder: (context, index) {
         return const SizedBox(height: 16);

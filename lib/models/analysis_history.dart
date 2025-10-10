@@ -12,8 +12,9 @@ class AnalysisHistory {
   final DateTime date;
   final int zScore;
   final String zScoreCategory;
-  final String recommendation;
+  String? recommendation;
   final NutritionalStatus nutritionalStatus;
+  final bool isNewData;
 
   AnalysisHistory({
     required this.id,
@@ -27,6 +28,7 @@ class AnalysisHistory {
     required this.zScoreCategory,
     required this.recommendation,
     required this.nutritionalStatus,
+    this.isNewData = false,
   });
 
   factory AnalysisHistory.fromJson(Map<String, dynamic> json) {
@@ -43,6 +45,7 @@ class AnalysisHistory {
       recommendation: json['recommendation'] as String,
       nutritionalStatus: (json['nutritionalStatus'] as String)
           .toNutritionalStatus(),
+      isNewData: false,
     );
   }
 
@@ -59,6 +62,7 @@ class AnalysisHistory {
       'zScoreCategory': zScoreCategory,
       'recommendation': recommendation,
       'nutritionalStatus': nutritionalStatus.label,
+      'isNewData': isNewData,
     };
   }
 }
