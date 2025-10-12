@@ -12,7 +12,7 @@ class DashedDivider extends StatelessWidget {
       lineThickness: 1.0,
       dashLength: 2.0,
       dashGapLength: 2,
-      dashColor: Colors.black26,
+      dashColor: Colors.black.withOpacity(0.2),
     );
   }
 }

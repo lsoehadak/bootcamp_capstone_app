@@ -86,7 +86,7 @@ class ItemAnalysisHistoryCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Tanggal Analisa', style: AppTextStyles.bodySmallText),
+              const Text('Tanggal Analisis', style: AppTextStyles.bodySmallText),
               Text(
                 formatDateToString(history.date),
                 style: AppTextStyles.bodySmallText,

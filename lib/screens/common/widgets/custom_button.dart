@@ -9,6 +9,7 @@ class CustomDefaultButton extends StatelessWidget {
   final double radius;
   final double height;
   final bool isLoading;
+  final Color backgroundColor;
 
   const CustomDefaultButton({
     super.key,
@@ -18,6 +19,7 @@ class CustomDefaultButton extends StatelessWidget {
     this.radius = 8,
     this.height = 48,
     this.isLoading = false,
+    this.backgroundColor = AppColors.mainThemeColor,
   });
 
   @override
@@ -34,7 +36,7 @@ class CustomDefaultButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radius),
         ),
-        backgroundColor: AppColors.mainThemeColor,
+        backgroundColor: backgroundColor,
         disabledBackgroundColor: Colors.grey,
       ),
       child: isLoading
@@ -53,6 +55,62 @@ class CustomDefaultButton extends StatelessWidget {
                 fontSize: 14,
               ),
             ),
+    );
+  }
+}
+
+class CustomOutlinedButton extends StatelessWidget {
+  final String label;
+  final bool isEnabled;
+  final Function onClick;
+  final double radius;
+  final double height;
+  final bool isLoading;
+
+  const CustomOutlinedButton({
+    super.key,
+    required this.label,
+    required this.onClick,
+    this.isEnabled = true,
+    this.radius = 8,
+    this.height = 48,
+    this.isLoading = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: isEnabled && !isLoading
+          ? () {
+        onClick();
+      }
+          : null,
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.all(12),
+        minimumSize: Size(double.infinity, height),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radius),
+        ),
+        side: const BorderSide(color: AppColors.mainThemeColor),
+        backgroundColor: Colors.white,
+        disabledBackgroundColor: Colors.white,
+      ),
+      child: isLoading
+          ? const SizedBox(
+        width: 20,
+        height: 20,
+        child: CircularProgressIndicator(
+          color: Colors.white,
+          strokeWidth: 2,
+        ),
+      )
+          : Text(
+        label,
+        style: AppTextStyles.titleText.copyWith(
+          color: AppColors.mainThemeColor,
+          fontSize: 14,
+        ),
+      ),
     );
   }
 }

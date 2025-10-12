@@ -67,12 +67,24 @@ final List<AnalysisHistory> listAnalysisHistory = [
   ),
 ];
 
-const dummyRecommendationContent = '''
-Berikut adalah tiga tindakan nutrisi spesifik yang harus segera Bapak/Ibu terapkan:
-
-Tingkatkan Asupan Protein Hewani Setiap Hari: Pastikan Budi mengonsumsi minimal 2-3 porsi protein hewani per hari (diutamakan sumber HEME​ yang mudah diserap). Sumber terbaik meliputi telur (1 butir penuh), hati ayam, daging merah, atau ikan (misalnya, ikan kembung/salmon). Protein hewani adalah "bahan bakar" utama untuk pertumbuhan tulang dan tinggi badan.
-
-Perkaya Makanan dengan Lemak Sehat dan Mikronutrien Penting: Dalam setiap porsi makan utama, tambahkan sumber lemak sehat seperti santan kental, minyak zaitun, atau margarin/mentega untuk meningkatkan kepadatan energi tanpa menambah volume terlalu banyak. Selain itu, berikan makanan yang kaya Zat Besi, Seng (Zinc), dan Kalsium (misalnya dari daging, seafood, sayuran hijau gelap, dan produk susu) karena mikronutrien ini esensial untuk pembentukan tulang dan fungsi imun.
-
-Jadwal Makan Terstruktur (Tiga Kali Makanan Utama dan Dua Kali Makanan Selingan): Terapkan jadwal makan yang teratur untuk memastikan asupan energi dan zat gizi makro-mikro terpenuhi. Berikan tiga kali makanan utama (lengkap: karbohidrat, protein hewani, sayur, lemak) dan dua kali makanan selingan (snack) yang padat gizi (misalnya, puding susu, buah alpukat, atau smoothie). Hindari memberikan terlalu banyak minuman manis atau makanan ringan (snack) yang bernilai gizi rendah menjelang waktu makan, karena dapat mengurangi nafsu makan Budi terhadap makanan utama.
-''';
+const String dummyRecommendationContent = '''
+Wah, hasil pengukuran status gizi menunjukkan Budi Darmawan tergolong Sangat Pendek. Tetap semangat ya, Bapak/Ibu! Ini adalah kesempatan untuk memberikan perhatian dan intervensi lebih lanjut agar pertumbuhan Budi bisa optimal.
+<h2>Rekomendasi Aksi Spesifik untuk Status TB/U: Sangat Pendek</h2>
+<h3>Gizi/Nutrisi</h3>
+<ul>
+<li>Fokus pada asupan protein hewani tinggi (minimal 2-3 kali sehari) seperti telur, hati ayam, ikan kembung, daging sapi, dan susu. Protein sangat penting untuk pertumbuhan.</li>
+<li>Pastikan Budi mengonsumsi makanan lengkap dan beragam yang mengandung karbohidrat, protein, lemak, vitamin, dan mineral. Berikan makanan utama 3 kali sehari dan selingan (snack) bernutrisi 2 kali sehari.</li>
+<li>Berikan suplemen vitamin dan mineral yang dianjurkan oleh tenaga kesehatan (seperti Vitamin A, Zinc, atau zat besi) sesuai dosis, setelah berkonsultasi dengan dokter atau ahli gizi.</li>
+</ul>
+<h3>Pemantauan</h3>
+<ul>
+<li>Lakukan pengukuran tinggi badan dan berat badan secara rutin (minimal sebulan sekali) di Posyandu atau fasilitas kesehatan untuk memantau tren pertumbuhannya.</li>
+<li>Segera konsultasikan hasil pengukuran ini dengan dokter spesialis anak atau ahli gizi untuk mendapatkan pemeriksaan kesehatan menyeluruh dan rencana intervensi gizi yang lebih terperinci dan personal.</li>
+<li>Pastikan Budi mendapatkan imunisasi lengkap sesuai jadwal untuk mencegah infeksi penyakit yang dapat menghambat pertumbuhan.</li>
+</ul>
+<h3>Pola Asuh</h3>
+<ul>
+<li>Ciptakan lingkungan makan yang menyenangkan dan bebas paksaan. Ajak Budi makan bersama keluarga di meja makan dan biarkan ia memilih porsi makanannya sendiri (sesuai porsi anak).</li>
+<li>Pastikan Budi mendapatkan waktu tidur yang cukup dan berkualitas (sekitar 10-13 jam per hari untuk usia 4 tahun) karena hormon pertumbuhan bekerja maksimal saat tidur.</li>
+<li>Ajak Budi untuk aktif bergerak dan bermain di luar ruangan setiap hari untuk merangsang nafsu makan dan pertumbuhan tulangnya.</li>
+</ul>''';

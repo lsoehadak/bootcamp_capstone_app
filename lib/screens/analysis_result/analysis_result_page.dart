@@ -150,7 +150,7 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
                   const SizedBox(height: 8),
                   history.recommendation == null
                       ? _buildGetRecommendation(provider)
-                      : _buildShowRecommendation(),
+                      : _buildShowRecommendation(provider),
                   history.isNewData
                       ? Padding(
                           padding: const EdgeInsets.only(top: 24),
@@ -277,9 +277,20 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
           textStyle: AppTextStyles.bodySmallText,
           onClick: () async {
             _showProgressDialog(context);
-            await provider.getRecommendation();
+            final result = await provider.getRecommendation();
             if (mounted) {
               Navigator.pop(context);
+              if (result) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PersonalizedRecommendationPage(
+                      recommendationContent:
+                          provider.analysisHistory.recommendation ?? '',
+                    ),
+                  ),
+                );
+              }
             }
           },
         ),
@@ -287,7 +298,7 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
     );
   }
 
-  Widget _buildShowRecommendation() {
+  Widget _buildShowRecommendation(AnalysisResultProvider provider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -303,7 +314,10 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const PersonalizedRecommendationPage(),
+                builder: (context) => PersonalizedRecommendationPage(
+                  recommendationContent:
+                      provider.analysisHistory.recommendation ?? '',
+                ),
               ),
             );
           },

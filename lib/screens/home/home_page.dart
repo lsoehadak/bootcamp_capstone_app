@@ -1,6 +1,7 @@
 import 'package:capstone_app/models/analysis_history.dart';
 import 'package:capstone_app/providers/home_provider.dart';
 import 'package:capstone_app/screens/common/empty_state_view.dart';
+import 'package:capstone_app/screens/home/widgets/bottom_sheet_delete_analysis_history.dart';
 import 'package:capstone_app/screens/home/widgets/item_analysis_history_card.dart';
 import 'package:capstone_app/screens/input_child_data/input_child_data_page.dart';
 import 'package:capstone_app/screens/profile/profile_page.dart';
@@ -197,7 +198,21 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           },
-          onDelete: () {},
+          onDelete: () {
+            showModalBottomSheet(
+              context: context,
+              backgroundColor: Colors.transparent,
+              builder: (context) {
+                return BottomSheetDeleteAnalysisHistory(
+                  analysisHistory: listAnalysisHistory[index],
+                  onDelete: () {},
+                  onCancel: () {
+                    Navigator.pop(context);
+                  },
+                );
+              },
+            );
+          },
         );
       },
       separatorBuilder: (context, index) {
