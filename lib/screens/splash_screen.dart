@@ -1,9 +1,9 @@
 import 'package:capstone_app/screens/home/home_page.dart';
+import 'package:capstone_app/screens/login/login_page.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
-import 'auth/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
         );
       } else {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
+          MaterialPageRoute(builder: (_) => const LoginPage()),
         );
       }
     });

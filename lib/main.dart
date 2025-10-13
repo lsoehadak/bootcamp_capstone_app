@@ -1,4 +1,5 @@
 import 'package:capstone_app/providers/home_provider.dart';
+import 'package:capstone_app/providers/login_provider.dart';
 import 'package:capstone_app/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
       providers: [
         Provider(create: (context) => ApiService()),
         ChangeNotifierProvider(
-          create: (context) => HomeProvider(context.read<ApiService>()),
+          create: (context) => LoginProvider(context.read<ApiService>()),
         ),
       ],
       child: const App(),

@@ -76,6 +76,7 @@ class CustomPasswordTextField extends StatelessWidget {
   final String hint;
   final bool isObscure;
   final Function() onReveal;
+  final Function(String)? onChanged;
 
   const CustomPasswordTextField({
     super.key,
@@ -83,6 +84,7 @@ class CustomPasswordTextField extends StatelessWidget {
     required this.hint,
     required this.isObscure,
     required this.onReveal,
+    this.onChanged,
   });
 
   OutlineInputBorder getMyInputBorder() {
@@ -118,6 +120,7 @@ class CustomPasswordTextField extends StatelessWidget {
         errorBorder: getMyInputBorder(),
         focusedErrorBorder: getMyInputBorder(),
       ),
+      onChanged: onChanged,
     );
   }
 }

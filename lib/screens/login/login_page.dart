@@ -1,11 +1,15 @@
-import 'package:capstone_app/utils/app_colors.dart';
-import 'package:capstone_app/utils/app_text_styles.dart';
+import 'package:capstone_app/providers/login_provider.dart';
 import 'package:capstone_app/screens/common/widgets/custom_button.dart';
-import 'package:capstone_app/screens/common/widgets/custom_card.dart';
-import 'package:capstone_app/screens/common/widgets/custom_divider.dart';
+import 'package:capstone_app/screens/common/widgets/custom_text_field.dart';
+import 'package:capstone_app/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../common/widgets/custom_text_field.dart';
+import '../../providers/home_provider.dart';
+import '../../providers/register_provider.dart';
+import '../../services/api_service.dart';
+import '../home/home_page.dart';
+import '../register/register_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,94 +19,126 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool isObscure = true;
-  var emailController = TextEditingController();
-  var isLoading = false;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomDefaultTextField(
-                  controller: TextEditingController(),
-                  hint: 'hint',
-                  suffix: Text('bulan', style: AppTextStyles.bodyLowEmText,),
-                  onSubmit: (value) {},
-                ),
-                const SizedBox(height: 16),
-                CustomPasswordTextField(
-                  controller: emailController,
-                  hint: 'hint',
-                  isObscure: isObscure,
-                  onReveal: () {
-                    setState(() {
-                      isObscure = !isObscure;
-                    });
-                  },
-                ),
-                const SizedBox(height: 16),
-                CustomDefaultButton(
-                  label: 'Submit',
-                  isLoading: isLoading,
-                  onClick: () {
-                    setState(() {
-                      isLoading = true;
-                    });
-                  },
-                ),
-                const SizedBox(height: 16),
-                CustomCompactOutlinedButton(
-                  label: 'Get Recommendation',
-                  height: 36,
-                  textStyle: AppTextStyles.bodySmallText.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.mainThemeColor,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+          child: Consumer<LoginProvider>(
+            builder: (context, provider, child) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 120,
+                    height: 120,
+                    child: Image.asset('assets/icons/logo_app.png'),
                   ),
-                  onClick: () {
-                    setState(() {});
-                  },
-                ),
-                const SizedBox(height: 16),
-                const DashedDivider(),
-                const SizedBox(height: 16),
-                CustomDefaultCard(
-                  padding: EdgeInsets.zero,
-                  content: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(color: Colors.red, width: 30, height: 30),
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Budi Darmawan',
-                              style: AppTextStyles.bodyHiEmText,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Laki - Laki',
-                              style: AppTextStyles.captionLowEmText,
-                            ),
-                          ],
+                  const SizedBox(height: 24),
+                  Text(
+                    'Selamat Datang di App',
+                    style: AppTextStyles.titleText.copyWith(fontSize: 24),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Silahkan login terlebih dahulu untuk menikmati seluruh fitur aplikasi',
+                    style: AppTextStyles.bodyLowEmText,
+                  ),
+                  const SizedBox(height: 32),
+                  const Text('Email', style: AppTextStyles.labelText),
+                  const SizedBox(height: 8),
+                  CustomDefaultTextField(
+                    controller: _emailController,
+                    hint: 'Masukkan Email',
+                    keyboardType: TextInputType.emailAddress,
+                    onChanged: (value) {
+                      provider.changeFormCompletionStatus(
+                        _checkAllFieldsFilled(),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  const Text('Password', style: AppTextStyles.labelText),
+                  const SizedBox(height: 8),
+                  CustomPasswordTextField(
+                    controller: _passwordController,
+                    hint: 'Masukkan Password',
+                    isObscure: provider.isPasswordObscured,
+                    onReveal: () {
+                      provider.togglePasswordVisibility();
+                    },
+                    onChanged: (value) {
+                      provider.changeFormCompletionStatus(
+                        _checkAllFieldsFilled(),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 32),
+                  CustomDefaultButton(
+                    label: 'Masuk',
+                    isEnabled: provider.isFormCompleted,
+                    onClick: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return ChangeNotifierProvider(
+                              create: (context) =>
+                                  HomeProvider(context.read<ApiService>()),
+                              child: const HomePage(),
+                            );
+                          },
                         ),
-                      ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('atau', style: AppTextStyles.bodySmallLowEmText),
                     ],
                   ),
-                ),
-              ],
-            ),
+                  const SizedBox(height: 16),
+                  CustomOutlinedButton(
+                    label: 'Buat Akun',
+                    onClick: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return ChangeNotifierProvider(
+                              create: (context) =>
+                                  RegisterProvider(context.read<ApiService>()),
+                              child: const RegisterPage(),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
     );
+  }
+
+  bool _checkAllFieldsFilled() {
+    return _emailController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty;
   }
 }
