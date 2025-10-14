@@ -3,6 +3,7 @@ import 'package:capstone_app/screens/common/widgets/custom_button.dart';
 import 'package:capstone_app/screens/common/widgets/custom_text_field.dart';
 import 'package:capstone_app/screens/input_child_data/widgets/gender_chip.dart';
 import 'package:capstone_app/services/api_service.dart';
+import 'package:capstone_app/services/firestore_service.dart';
 import 'package:capstone_app/utils/app_text_styles.dart';
 import 'package:capstone_app/utils/ui_state.dart';
 import 'package:flutter/material.dart';
@@ -263,7 +264,7 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
           return ChangeNotifierProvider(
             create: (context) => AnalysisResultProvider(
               data,
-              context.read<ApiService>(),
+              context.read<FirestoreService>(),
             ),
             child: const AnalysisResultPage(),
           );

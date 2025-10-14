@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:capstone_app/utils/app_colors.dart';
 
 class AnalysisHistory {
-  final String id;
+  final String? id;
   final String name;
   final String gender;
   final int ageInMonth;
@@ -17,7 +17,7 @@ class AnalysisHistory {
   final bool isNewData;
 
   AnalysisHistory({
-    required this.id,
+    this.id,
     required this.name,
     required this.gender,
     required this.ageInMonth,
@@ -26,14 +26,14 @@ class AnalysisHistory {
     required this.date,
     required this.zScore,
     required this.zScoreCategory,
-    required this.recommendation,
+    this.recommendation,
     required this.nutritionalStatus,
     this.isNewData = false,
   });
 
-  factory AnalysisHistory.fromJson(Map<String, dynamic> json) {
+  factory AnalysisHistory.fromJson(Map<String, dynamic> json, String docId) {
     return AnalysisHistory(
-      id: json['id'] as String,
+      id: docId,
       name: json['name'] as String,
       gender: json['gender'] as String,
       ageInMonth: json['ageInMonth'] as int,
@@ -42,7 +42,7 @@ class AnalysisHistory {
       date: DateTime.parse(json['date'] as String),
       zScore: json['zScore'] as int,
       zScoreCategory: json['zScoreCategory'] as String,
-      recommendation: json['recommendation'] as String,
+      recommendation: json['recommendation'] as String?,
       nutritionalStatus: (json['nutritionalStatus'] as String)
           .toNutritionalStatus(),
       isNewData: false,
@@ -51,7 +51,6 @@ class AnalysisHistory {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'name': name,
       'gender': gender,
       'ageInMonth': ageInMonth,

@@ -1,36 +1,68 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/user_model.dart';
-import '../models/child_model.dart';
+import 'package:flutter/cupertino.dart';
+
+import '../models/analysis_history.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  Future<void> createUser(UserModel user) async {
-    await _db.collection('users').doc(user.uid).set(user.toMap());
-  }
+  Future<bool> saveAnalysisHistory(
+    String userId,
+    AnalysisHistory analysisHistory,
+  ) async {
+    try {
+      final historyCollectionRef = _db
+          .collection('users')
+          .doc(userId)
+          .collection('analysisHistory');
 
-  Future<UserModel?> getUser(String uid) async {
-    DocumentSnapshot doc = await _db.collection('users').doc(uid).get();
-    if (doc.exists) {
-      return UserModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+      await historyCollectionRef.add(analysisHistory.toJson());
+      return true;
+    } catch (e) {
+      return false;
     }
-    return null;
   }
 
-  Future<void> addChild(String userId, ChildModel child) async {
-    await _db.collection('users').doc(userId).collection('children').add(child.toMap());
-  }
-
-  Stream<List<ChildModel>> getChildren(String userId) {
-    return _db
+  Future<List<AnalysisHistory>> getAnalysisHistoryList(String userId) async {
+    final historyCollectionRef = _db
         .collection('users')
         .doc(userId)
-        .collection('children')
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => ChildModel.fromMap(doc.data(), doc.id))
-            .toList());
+        .collection('analysisHistory');
+
+    final querySnapshot = await historyCollectionRef
+        .orderBy('date', descending: true)
+        .get();
+
+    return querySnapshot.docs.map((doc) {
+      debugPrint(doc.data().toString());
+      debugPrint('id : ${doc.id}');
+      return AnalysisHistory.fromJson(doc.data(), doc.id);
+    }).toList();
   }
-  
-  // TODO: Add methods for measurements
+
+  Future<bool> deleteAnalysisHistory(String userId, String docId) async {
+    try {
+      final historyCollectionRef = _db
+          .collection('users')
+          .doc(userId)
+          .collection('analysisHistory');
+      await historyCollectionRef.doc(docId).delete();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> updateAnalysisHistory(String userId, AnalysisHistory analysisHistory) async {
+    try {
+      final historyCollectionRef = _db
+          .collection('users')
+          .doc(userId)
+          .collection('analysisHistory');
+      await historyCollectionRef.doc(analysisHistory.id).update(analysisHistory.toJson());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

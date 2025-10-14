@@ -1,20 +1,30 @@
 import 'package:capstone_app/data/dummy_analysis_history_data.dart';
 import 'package:capstone_app/models/analysis_history.dart';
-import 'package:capstone_app/services/api_service.dart';
+import 'package:capstone_app/services/firestore_service.dart';
 import 'package:capstone_app/utils/ui_state.dart';
 import 'package:flutter/material.dart';
 
 class AnalysisResultProvider extends ChangeNotifier {
   final AnalysisHistory _analysisHistory;
-  final ApiService _apiService;
+  final FirestoreService _firestoreService;
 
   AnalysisHistory get analysisHistory => _analysisHistory;
 
-  AnalysisResultProvider(this._analysisHistory, this._apiService);
+  String? _recommendation;
+
+  String? get recommendation => _recommendation;
+
+  AnalysisResultProvider(this._analysisHistory, this._firestoreService) {
+    _recommendation = _analysisHistory.recommendation;
+  }
 
   UiState<bool> _uiState = UiNoneState();
 
   UiState<bool> get uiState => _uiState;
+
+  bool _isDataUpdated = false;
+
+  bool get isDataUpdated => _isDataUpdated;
 
   Future<bool> getRecommendation() async {
     notifyListeners();
@@ -22,7 +32,10 @@ class AnalysisResultProvider extends ChangeNotifier {
     // simulate get recommendation from gemini
     await Future.delayed(const Duration(seconds: 2));
 
-    _analysisHistory.recommendation = dummyRecommendationContent;
+    _isDataUpdated = true;
+
+    // _analysisHistory.recommendation = dummyRecommendationContent;
+    _recommendation = dummyRecommendationContent;
 
     notifyListeners();
 
@@ -35,7 +48,16 @@ class AnalysisResultProvider extends ChangeNotifier {
 
     await Future.delayed(const Duration(seconds: 1));
     try {
-      final result = await _apiService.saveAnalysis(analysisHistory);
+      analysisHistory.recommendation = _recommendation;
+      final result = isDataUpdated
+          ? await _firestoreService.updateAnalysisHistory(
+              'UID123',
+              analysisHistory,
+            )
+          : await _firestoreService.saveAnalysisHistory(
+              'UID123',
+              analysisHistory,
+            );
       if (result) {
         _uiState = UiSuccessState(true);
       } else {

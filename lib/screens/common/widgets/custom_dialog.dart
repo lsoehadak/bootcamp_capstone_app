@@ -32,3 +32,13 @@ class ProgressDialog extends StatelessWidget {
     );
   }
 }
+
+void showProgressDialog(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return ProgressDialog(message: message);
+    },
+    barrierDismissible: false,
+  );
+}

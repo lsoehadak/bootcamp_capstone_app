@@ -1,4 +1,4 @@
-import 'package:capstone_app/screens/login/login_page.dart';
+import 'package:capstone_app/screens/home/home_page.dart';
 import 'package:capstone_app/utils/app_colors.dart';
 import 'package:capstone_app/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Siaga Gizi',
       theme: lightTheme,
-      home: const LoginPage(),
+      home: const HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }

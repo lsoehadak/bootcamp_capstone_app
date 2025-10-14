@@ -148,14 +148,16 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
                     style: AppTextStyles.sectionTitleText,
                   ),
                   const SizedBox(height: 8),
-                  history.recommendation == null
+                  provider.recommendation == null
                       ? _buildGetRecommendation(provider)
                       : _buildShowRecommendation(provider),
-                  history.isNewData
+                  history.isNewData || provider.isDataUpdated
                       ? Padding(
                           padding: const EdgeInsets.only(top: 24),
                           child: CustomDefaultButton(
-                            label: 'Simpan Hasil Analisa',
+                            label: provider.isDataUpdated
+                                ? 'Simpan Ulang'
+                                : 'Simpan Hasil Analisa',
                             isLoading: provider.uiState is UiLoadingState,
                             onClick: () async {
                               await provider.saveAnalysis();
@@ -285,8 +287,7 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => PersonalizedRecommendationPage(
-                      recommendationContent:
-                          provider.analysisHistory.recommendation ?? '',
+                      recommendationContent: provider.recommendation ?? '',
                     ),
                   ),
                 );
@@ -315,8 +316,7 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
               context,
               MaterialPageRoute(
                 builder: (context) => PersonalizedRecommendationPage(
-                  recommendationContent:
-                      provider.analysisHistory.recommendation ?? '',
+                  recommendationContent: provider.recommendation ?? '',
                 ),
               ),
             );

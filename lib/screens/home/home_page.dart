@@ -1,10 +1,13 @@
 import 'package:capstone_app/models/analysis_history.dart';
 import 'package:capstone_app/providers/home_provider.dart';
 import 'package:capstone_app/screens/common/empty_state_view.dart';
+import 'package:capstone_app/screens/common/error_state_view.dart';
+import 'package:capstone_app/screens/common/widgets/custom_dialog.dart';
 import 'package:capstone_app/screens/home/widgets/bottom_sheet_delete_analysis_history.dart';
 import 'package:capstone_app/screens/home/widgets/item_analysis_history_card.dart';
 import 'package:capstone_app/screens/input_child_data/input_child_data_page.dart';
 import 'package:capstone_app/screens/profile/profile_page.dart';
+import 'package:capstone_app/services/firestore_service.dart';
 import 'package:capstone_app/utils/app_colors.dart';
 import 'package:capstone_app/utils/app_text_styles.dart';
 import 'package:capstone_app/utils/ui_state.dart';
@@ -14,7 +17,6 @@ import 'package:provider/provider.dart';
 
 import '../../providers/analysis_result_provider.dart';
 import '../../providers/input_child_data_provider.dart';
-import '../../services/api_service.dart';
 import '../analysis_result/analysis_result_page.dart';
 import '../common/widgets/custom_text_field.dart';
 
@@ -60,13 +62,23 @@ class _HomePageState extends State<HomePage> {
                   UiSuccessState<List<AnalysisHistory>>(
                     data: var analysisHistoryList,
                   ) =>
-                    _buildLoadedStateView(analysisHistoryList),
-                  UiErrorState<List<AnalysisHistory>>() => const SizedBox(),
+                    _buildLoadedStateView(provider, analysisHistoryList),
+                  UiErrorState<List<AnalysisHistory>>(
+                    errorTitle: var title,
+                    errorMessage: var message,
+                  ) =>
+                    ErrorStateView(
+                      title: title,
+                      message: message,
+                      onRefresh: () {
+                        provider.fetchAnalysisHistoryList();
+                      },
+                    ),
                   UiEmptyState<List<AnalysisHistory>>(
                     title: var title,
                     message: var message,
                   ) =>
-                    _buildEmptyState(title, message),
+                    EmptyStateView(title: title, message: message),
                 };
               },
             ),
@@ -172,11 +184,10 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildEmptyState(String title, String message) {
-    return EmptyStateView(title: title, message: message);
-  }
-
-  Widget _buildLoadedStateView(List<AnalysisHistory> listAnalysisHistory) {
+  Widget _buildLoadedStateView(
+    HomeProvider provider,
+    List<AnalysisHistory> listAnalysisHistory,
+  ) {
     return ListView.separated(
       padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 32),
       itemBuilder: (context, index) {
@@ -190,7 +201,7 @@ class _HomePageState extends State<HomePage> {
                   return ChangeNotifierProvider(
                     create: (context) => AnalysisResultProvider(
                       listAnalysisHistory[index],
-                      context.read<ApiService>(),
+                      context.read<FirestoreService>(),
                     ),
                     child: const AnalysisResultPage(),
                   );
@@ -198,20 +209,43 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           },
-          onDelete: () {
-            showModalBottomSheet(
+          onDelete: () async {
+            final result = await showModalBottomSheet(
               context: context,
               backgroundColor: Colors.transparent,
               builder: (context) {
                 return BottomSheetDeleteAnalysisHistory(
                   analysisHistory: listAnalysisHistory[index],
-                  onDelete: () {},
+                  onDelete: () {
+                    Navigator.pop(context, true);
+                  },
                   onCancel: () {
-                    Navigator.pop(context);
+                    Navigator.pop(context, false);
                   },
                 );
               },
             );
+
+            if (result != null && result) {
+              if (mounted) {
+                showProgressDialog(context, 'Menghapus data...');
+                final isDeleteSuccess = await provider.deleteAnalysisHistory(
+                  listAnalysisHistory[index].id.toString(),
+                );
+                // close the progress dialog
+                Navigator.pop(context);
+                if (isDeleteSuccess) {
+                  provider.fetchAnalysisHistoryList();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Gagal menghapus data'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
+                }
+              }
+            }
           },
         );
       },
