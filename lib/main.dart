@@ -1,4 +1,4 @@
-import 'package:capstone_app/firebase_options.dart';
+import 'firebase_options.dart';
 import 'package:capstone_app/providers/home_provider.dart';
 import 'package:capstone_app/providers/login_provider.dart';
 import 'package:capstone_app/services/api_service.dart';
@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
-
 import 'app.dart';
+import 'providers/auth_provider.dart';
 
 void main() async {
   // Jika menggunakan Firebase, pastikan setup sudah benar lalu uncomment baris di bawah:
@@ -43,6 +43,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => HomeProvider(context.read<FirestoreService>()),
         ),
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
       ],
       child: const App(),
     );

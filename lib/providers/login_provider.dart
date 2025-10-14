@@ -25,7 +25,5 @@ class LoginProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void login() async {
-
-  }
+  void login() async {}
 }

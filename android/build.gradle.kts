@@ -1,3 +1,8 @@
+plugins {
+    // The Google Services plugin version is declared in settings.gradle.kts
+    // to avoid duplicate plugin classpath/version conflicts.
+}
+
 allprojects {
     repositories {
         google()
