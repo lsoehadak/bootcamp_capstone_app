@@ -1,8 +1,11 @@
-import 'package:capstone_app/data/dummy_analysis_history_data.dart';
 import 'package:capstone_app/models/analysis_history.dart';
 import 'package:capstone_app/services/firestore_service.dart';
+import 'package:capstone_app/utils/gen_ai_prompt.dart';
 import 'package:capstone_app/utils/ui_state.dart';
 import 'package:flutter/material.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
+
+import '../env/env.dart';
 
 class AnalysisResultProvider extends ChangeNotifier {
   final AnalysisHistory _analysisHistory;
@@ -29,17 +32,26 @@ class AnalysisResultProvider extends ChangeNotifier {
   Future<bool> getRecommendation() async {
     notifyListeners();
 
-    // simulate get recommendation from gemini
-    await Future.delayed(const Duration(seconds: 2));
+    GenerativeModel model = GenerativeModel(
+      model: 'gemini-2.0-flash',
+      apiKey: Env.geminiApiKey,
+      systemInstruction: Content.system(GenAiPrompt.getSystemInstruction()),
+    );
 
-    _isDataUpdated = true;
+    final prompt = GenAiPrompt.getRecommendationPrompt(_analysisHistory);
 
-    // _analysisHistory.recommendation = dummyRecommendationContent;
-    _recommendation = dummyRecommendationContent;
+    try {
+      final content = [Content.text(prompt)];
+      final response = await model.generateContent(content);
 
-    notifyListeners();
+      _recommendation = response.text.toString();
+      _isDataUpdated = true;
+      notifyListeners();
 
-    return true;
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<void> saveAnalysis() async {

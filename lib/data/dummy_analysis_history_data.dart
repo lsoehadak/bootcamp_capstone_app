@@ -31,7 +31,7 @@ final List<AnalysisHistory> listAnalysisHistory = [
     zScoreCategory: 'Sangat Pendek',
     recommendation:
         'Segera konsultasi ke dokter spesialis anak atau ahli gizi untuk intervensi stunting intensif.',
-    nutritionalStatus: NutritionalStatus.stunting,
+    nutritionalStatus: NutritionalStatus.severeStunted,
   ),
   AnalysisHistory(
     id: 'AH003',
@@ -47,7 +47,7 @@ final List<AnalysisHistory> listAnalysisHistory = [
     zScoreCategory: 'Waspada',
     recommendation:
         'Tingkatkan kualitas MPASI dan frekuensi pemberian makan. Perlu evaluasi gizi lebih lanjut.',
-    nutritionalStatus: NutritionalStatus.atRisk,
+    nutritionalStatus: NutritionalStatus.stunted,
   ),
   AnalysisHistory(
     id: 'AH004',

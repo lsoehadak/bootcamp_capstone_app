@@ -67,9 +67,10 @@ class AnalysisHistory {
 }
 
 enum NutritionalStatus {
+  tall('Tinggi', AppColors.greenStatusColor),
   normal('Normal', AppColors.greenStatusColor),
-  atRisk('Waspada', AppColors.orangeStatusColor),
-  stunting('Stunting', AppColors.redStatusColor);
+  stunted('Pendek', AppColors.orangeStatusColor),
+  severeStunted('Sangat Pendek', AppColors.redStatusColor);
 
   const NutritionalStatus(this.label, this.color);
 
@@ -80,12 +81,14 @@ enum NutritionalStatus {
 extension NutritionalStatusParsing on String {
   NutritionalStatus toNutritionalStatus() {
     switch (this) {
+      case 'Tinggi':
+        return NutritionalStatus.tall;
       case 'Normal':
         return NutritionalStatus.normal;
-      case 'Waspada':
-        return NutritionalStatus.atRisk;
-      case 'Stunting':
-        return NutritionalStatus.stunting;
+      case 'Pendek':
+        return NutritionalStatus.stunted;
+      case 'Sangat Pendek':
+        return NutritionalStatus.severeStunted;
       default:
         throw FormatException('Invalid nutritional status string: $this');
     }
