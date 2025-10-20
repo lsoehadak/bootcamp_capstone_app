@@ -3,6 +3,7 @@ import 'package:capstone_app/providers/home_provider.dart';
 import 'package:capstone_app/providers/login_provider.dart';
 import 'package:capstone_app/services/api_service.dart';
 import 'package:capstone_app/services/firestore_service.dart';
+import 'package:capstone_app/services/tf_lite_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
       providers: [
         Provider(create: (context) => ApiService()),
         Provider(create: (context) => FirestoreService()),
+        Provider(create: (context) => TFLiteService()),
         ChangeNotifierProvider(
           create: (context) => LoginProvider(context.read<ApiService>()),
         ),

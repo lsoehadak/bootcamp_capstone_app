@@ -8,12 +8,14 @@ import 'package:capstone_app/screens/home/widgets/item_analysis_history_card.dar
 import 'package:capstone_app/screens/input_child_data/input_child_data_page.dart';
 import 'package:capstone_app/screens/profile/profile_page.dart';
 import 'package:capstone_app/services/firestore_service.dart';
+import 'package:capstone_app/services/tf_lite_service.dart';
 import 'package:capstone_app/utils/app_colors.dart';
 import 'package:capstone_app/utils/app_text_styles.dart';
 import 'package:capstone_app/utils/ui_state.dart';
 import 'package:capstone_app/widgets/name_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tflite_flutter/tflite_flutter.dart';
 
 import '../../providers/analysis_result_provider.dart';
 import '../../providers/input_child_data_provider.dart';
@@ -92,7 +94,9 @@ class _HomePageState extends State<HomePage> {
             MaterialPageRoute(
               builder: (context) {
                 return ChangeNotifierProvider(
-                  create: (context) => InputChildDataProvider(),
+                  create: (context) => InputChildDataProvider(
+                    context.read<TFLiteService>()..loadModel(),
+                  ),
                   child: const InputChildDataPage(),
                 );
               },

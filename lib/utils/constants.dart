@@ -1,14 +1,4 @@
-import 'package:flutter/material.dart';
-
-// Colors
-const kPrimaryColor = Colors.blue;
-const kAccentColor = Colors.lightBlueAccent;
-
-// Text Styles
-const kHeadingTextStyle = TextStyle(
-  fontSize: 24.0,
-  fontWeight: FontWeight.bold,
-);
-
-// API Endpoints (if any)
-// const String kApiBaseUrl = 'https://api.example.com';
+const ageMean = 26.491629060114768;
+const heightMean = 82.37600241356041;
+const ageStd = 19.452644302044728;
+const heightStd = 19.7303062453049;

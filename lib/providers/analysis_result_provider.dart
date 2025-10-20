@@ -61,7 +61,7 @@ class AnalysisResultProvider extends ChangeNotifier {
     await Future.delayed(const Duration(seconds: 1));
     try {
       analysisHistory.recommendation = _recommendation;
-      final result = isDataUpdated
+      final result = isDataUpdated && !analysisHistory.isNewData
           ? await _firestoreService.updateAnalysisHistory(
               'UID123',
               analysisHistory,

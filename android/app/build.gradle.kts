@@ -42,6 +42,10 @@ android {
     }
 }
 
+dependencies {
+    implementation("org.tensorflow:tensorflow-lite-gpu-api:2.17.0")
+}
+
 flutter {
     source = "../.."
 }

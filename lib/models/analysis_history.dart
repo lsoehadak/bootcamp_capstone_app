@@ -10,7 +10,7 @@ class AnalysisHistory {
   final double height;
   final double weight;
   final DateTime date;
-  final int zScore;
+  final double zScore;
   final String zScoreCategory;
   String? recommendation;
   final NutritionalStatus nutritionalStatus;
@@ -40,7 +40,7 @@ class AnalysisHistory {
       height: (json['height'] as num).toDouble(),
       weight: (json['weight'] as num).toDouble(),
       date: DateTime.parse(json['date'] as String),
-      zScore: json['zScore'] as int,
+      zScore: json['zScore'] as double,
       zScoreCategory: json['zScoreCategory'] as String,
       recommendation: json['recommendation'] as String?,
       nutritionalStatus: (json['nutritionalStatus'] as String)
@@ -67,15 +67,32 @@ class AnalysisHistory {
 }
 
 enum NutritionalStatus {
-  tall('Tinggi', AppColors.greenStatusColor),
-  normal('Normal', AppColors.greenStatusColor),
-  stunted('Pendek', AppColors.orangeStatusColor),
-  severeStunted('Sangat Pendek', AppColors.redStatusColor);
+  tall(
+    'Tinggi',
+    AppColors.greenStatusColor,
+    '* Selamat! Tinggi badan anak Anda di atas batas normal untuk usianya.',
+  ),
+  normal(
+    'Normal',
+    AppColors.greenStatusColor,
+    '* Selamat! Tinggi badan anak Anda berada dalam batas normal sesuai usia',
+  ),
+  stunted(
+    'Pendek',
+    AppColors.orangeStatusColor,
+    '* Perhatian! Tinggi badan anak Anda tergolong pendek untuk usianya (stunting).',
+  ),
+  severeStunted(
+    'Sangat Pendek',
+    AppColors.redStatusColor,
+    '* Peringatan! Tinggi badan anak Anda tergolong sangat pendek untuk usianya (stunting berat).',
+  );
 
-  const NutritionalStatus(this.label, this.color);
+  const NutritionalStatus(this.label, this.color, this.summary);
 
   final String label;
   final Color color;
+  final String summary;
 }
 
 extension NutritionalStatusParsing on String {

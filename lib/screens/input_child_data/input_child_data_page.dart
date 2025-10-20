@@ -2,7 +2,6 @@ import 'package:capstone_app/providers/analysis_result_provider.dart';
 import 'package:capstone_app/screens/common/widgets/custom_button.dart';
 import 'package:capstone_app/screens/common/widgets/custom_text_field.dart';
 import 'package:capstone_app/screens/input_child_data/widgets/gender_chip.dart';
-import 'package:capstone_app/services/api_service.dart';
 import 'package:capstone_app/services/firestore_service.dart';
 import 'package:capstone_app/utils/app_text_styles.dart';
 import 'package:capstone_app/utils/ui_state.dart';
@@ -23,14 +22,15 @@ class InputChildDataPage extends StatefulWidget {
 class _InputChildDataPageState extends State<InputChildDataPage> {
   final _nameController = TextEditingController();
   final _ageController = TextEditingController();
-  final _weightController = TextEditingController();
+
+  // final _weightController = TextEditingController();
   final _heightController = TextEditingController();
 
   @override
   void dispose() {
     _nameController.dispose();
     _ageController.dispose();
-    _weightController.dispose();
+    // _weightController.dispose();
     _heightController.dispose();
     super.dispose();
   }
@@ -92,7 +92,13 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
                                     'Usia Anak',
                                     style: AppTextStyles.labelText,
                                   ),
-                                  const SizedBox(height: 8),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '* Usia maksimal 60 bulan',
+                                    style: AppTextStyles.bodySmallLowEmText
+                                        .copyWith(fontSize: 11),
+                                  ),
+                                  const SizedBox(height: 12),
                                   CustomDefaultTextField(
                                     controller: _ageController,
                                     hint: '',
@@ -122,35 +128,35 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
                         const SizedBox(height: 16),
                         Row(
                           children: [
-                            Expanded(
-                              flex: 1,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'Berat Badan',
-                                    style: AppTextStyles.labelText,
-                                  ),
-                                  const SizedBox(height: 8),
-                                  CustomDefaultTextField(
-                                    controller: _weightController,
-                                    hint: '',
-                                    keyboardType: TextInputType.number,
-                                    isDigitOnly: true,
-                                    suffix: const Text(
-                                      'kg',
-                                      style: AppTextStyles.bodyLowEmText,
-                                    ),
-                                    onChanged: (value) {
-                                      provider.changeFormCompletionStatus(
-                                        _checkAllFieldsFilled(),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 12),
+                            // Expanded(
+                            //   flex: 1,
+                            //   child: Column(
+                            //     crossAxisAlignment: CrossAxisAlignment.start,
+                            //     children: [
+                            //       const Text(
+                            //         'Berat Badan',
+                            //         style: AppTextStyles.labelText,
+                            //       ),
+                            //       const SizedBox(height: 8),
+                            //       CustomDefaultTextField(
+                            //         controller: _weightController,
+                            //         hint: '',
+                            //         keyboardType: TextInputType.number,
+                            //         isDigitOnly: true,
+                            //         suffix: const Text(
+                            //           'kg',
+                            //           style: AppTextStyles.bodyLowEmText,
+                            //         ),
+                            //         onChanged: (value) {
+                            //           provider.changeFormCompletionStatus(
+                            //             _checkAllFieldsFilled(),
+                            //           );
+                            //         },
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+                            // const SizedBox(width: 12),
                             Expanded(
                               flex: 1,
                               child: Column(
@@ -179,6 +185,8 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
                                 ],
                               ),
                             ),
+                            const SizedBox(width: 12),
+                            const Expanded(flex: 1, child: SizedBox()),
                           ],
                         ),
                       ],
@@ -195,7 +203,6 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
                       provider.startAnalyze(
                         _nameController.text,
                         _ageController.text,
-                        _weightController.text,
                         _heightController.text,
                       );
                     },
@@ -241,16 +248,13 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
   bool _checkAllFieldsFilled() {
     return _nameController.text.isNotEmpty &&
         _ageController.text.isNotEmpty &&
-        _weightController.text.isNotEmpty &&
+        // _weightController.text.isNotEmpty &&
         _heightController.text.isNotEmpty;
   }
 
   void _showErrorMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 1),
-      ),
+      SnackBar(content: Text(message), duration: const Duration(seconds: 1)),
     );
     context.read<InputChildDataProvider>().resetState();
   }
@@ -262,10 +266,8 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
       MaterialPageRoute(
         builder: (context) {
           return ChangeNotifierProvider(
-            create: (context) => AnalysisResultProvider(
-              data,
-              context.read<FirestoreService>(),
-            ),
+            create: (context) =>
+                AnalysisResultProvider(data, context.read<FirestoreService>()),
             child: const AnalysisResultPage(),
           );
         },

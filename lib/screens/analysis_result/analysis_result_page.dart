@@ -103,15 +103,15 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
                     'Tinggi Badan',
                     '${history.height} cm',
                   ),
-                  const SizedBox(height: 8),
-                  _buildRowFormattedInfo('Berat Badan', '${history.weight} kg'),
+                  // const SizedBox(height: 8),
+                  // _buildRowFormattedInfo('Berat Badan', '${history.weight} kg'),
                   const SizedBox(height: 16),
                   const DashedDivider(),
                   const SizedBox(height: 16),
                   _buildStatusCard(history.nutritionalStatus),
                   const SizedBox(height: 12),
-                  const Text(
-                    '* Selamat! Tinggi badan anak Anda berada dalam batas normal sesuai usia',
+                  Text(
+                    history.nutritionalStatus.summary,
                     style: AppTextStyles.bodySmallText,
                   ),
                   const SizedBox(height: 16),
@@ -132,13 +132,13 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
                     style: AppTextStyles.bodyText,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'Kategori TB/U',
-                    style: AppTextStyles.bodySmallLowEmText,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(history.zScoreCategory, style: AppTextStyles.bodyText),
-                  const SizedBox(height: 16),
+                  // const Text(
+                  //   'Kategori TB/U',
+                  //   style: AppTextStyles.bodySmallLowEmText,
+                  // ),
+                  // const SizedBox(height: 8),
+                  // Text(history.zScoreCategory, style: AppTextStyles.bodyText),
+                  // const SizedBox(height: 16),
                   _buildZScoreGuidance(),
                   const SizedBox(height: 16),
                   const DashedDivider(),
@@ -155,7 +155,7 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
                       ? Padding(
                           padding: const EdgeInsets.only(top: 24),
                           child: CustomDefaultButton(
-                            label: provider.isDataUpdated
+                            label: provider.isDataUpdated && !provider.analysisHistory.isNewData
                                 ? 'Simpan Ulang'
                                 : 'Simpan Hasil Analisa',
                             isLoading: provider.uiState is UiLoadingState,
@@ -245,14 +245,24 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
             'Z-Score merupakan nilai pembanding antara data anak Anda dengan data sehat anak sebaya.',
             style: AppTextStyles.bodySmallLowEmText,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           const Text(
-            '~ Nilai 0 → Sesuai dengan rata-rata',
+            '* Di atas 3 → Lebih tinggi dari rata-rata',
             style: AppTextStyles.bodySmallLowEmText,
           ),
           const SizedBox(height: 4),
           const Text(
-            '~ Nilai -2 → Batas bahaya',
+            '* -2 sampai 3 → Sesuai rata-rata',
+            style: AppTextStyles.bodySmallLowEmText,
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            '* -3 sampai -2 → Pendek dibanding usia',
+            style: AppTextStyles.bodySmallLowEmText,
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            '* Di bawah -3 → Sangat pendek dibanding usia',
             style: AppTextStyles.bodySmallLowEmText,
           ),
         ],
