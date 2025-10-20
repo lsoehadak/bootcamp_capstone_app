@@ -65,6 +65,11 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
+                          'Masukkan data anak balita Anda sesuai form di bawah untuk melakukan analisis.',
+                          style: AppTextStyles.bodyLowEmText,
+                        ),
+                        const SizedBox(height: 24),
+                        const Text(
                           'Nama Lengkap',
                           style: AppTextStyles.labelText,
                         ),
@@ -92,13 +97,13 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
                                     'Usia Anak',
                                     style: AppTextStyles.labelText,
                                   ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    '* Usia maksimal 60 bulan',
-                                    style: AppTextStyles.bodySmallLowEmText
-                                        .copyWith(fontSize: 11),
-                                  ),
-                                  const SizedBox(height: 12),
+                                  const SizedBox(height: 8),
+                                  // Text(
+                                  //   '* Usia maksimal 60 bulan',
+                                  //   style: AppTextStyles.bodySmallLowEmText
+                                  //       .copyWith(fontSize: 11),
+                                  // ),
+                                  // const SizedBox(height: 12),
                                   CustomDefaultTextField(
                                     controller: _ageController,
                                     hint: '',
@@ -110,14 +115,28 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
                                     ),
                                     onChanged: (value) {
                                       var age = int.tryParse(value);
-                                      if (age != null && age > 60) {
-                                        _ageController.text = '60';
-                                      }
+                                      provider.changeIsAgeInputValid(
+                                        age != null && age > 60,
+                                      );
                                       provider.changeFormCompletionStatus(
                                         _checkAllFieldsFilled(),
                                       );
                                     },
                                   ),
+                                  provider.isAgeInputValid
+                                      ? Padding(
+                                          padding: const EdgeInsetsGeometry.only(
+                                            top: 8,
+                                          ),
+                                          child: Text(
+                                            'Usia maksimal 60 bulan',
+                                            style: AppTextStyles.captionText
+                                                .copyWith(
+                                                  color: Colors.redAccent,
+                                                ),
+                                          ),
+                                        )
+                                      : const SizedBox(),
                                 ],
                               ),
                             ),
@@ -246,8 +265,11 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
   }
 
   bool _checkAllFieldsFilled() {
+    var age = int.tryParse(_ageController.text);
+
     return _nameController.text.isNotEmpty &&
         _ageController.text.isNotEmpty &&
+        (age != null && age <= 60) &&
         // _weightController.text.isNotEmpty &&
         _heightController.text.isNotEmpty;
   }

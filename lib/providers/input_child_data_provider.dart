@@ -14,6 +14,10 @@ class InputChildDataProvider extends ChangeNotifier {
 
   InputChildDataProvider(this._tfLiteService);
 
+  bool _isAgeInputValid = false;
+
+  bool get isAgeInputValid => _isAgeInputValid;
+
   bool _isFormCompleted = false;
 
   bool get isFormCompleted => _isFormCompleted;
@@ -30,6 +34,12 @@ class InputChildDataProvider extends ChangeNotifier {
     _selectedGender = value;
     notifyListeners();
   }
+
+  void changeIsAgeInputValid(bool value) {
+    _isAgeInputValid = value;
+    notifyListeners();
+  }
+
 
   void changeFormCompletionStatus(bool status) {
     _isFormCompleted = status;

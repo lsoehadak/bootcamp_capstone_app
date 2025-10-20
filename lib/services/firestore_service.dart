@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 
 import '../models/analysis_history.dart';
 
@@ -34,8 +33,8 @@ class FirestoreService {
         .get();
 
     return querySnapshot.docs.map((doc) {
-      debugPrint(doc.data().toString());
-      debugPrint('id : ${doc.id}');
+      // debugPrint(doc.data().toString());
+      // debugPrint('id : ${doc.id}');
       return AnalysisHistory.fromJson(doc.data(), doc.id);
     }).toList();
   }

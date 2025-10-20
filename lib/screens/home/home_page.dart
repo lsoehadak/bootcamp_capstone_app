@@ -15,7 +15,6 @@ import 'package:capstone_app/utils/ui_state.dart';
 import 'package:capstone_app/widgets/name_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tflite_flutter/tflite_flutter.dart';
 
 import '../../providers/analysis_result_provider.dart';
 import '../../providers/input_child_data_provider.dart';
@@ -181,8 +180,8 @@ class _HomePageState extends State<HomePage> {
         controller: _searchController,
         hint: 'Nama anak...',
         prefixIcon: const Icon(Icons.search),
-        onSubmit: (value) {
-          context.read<HomeProvider>().filterAnalysisHistoryList(value);
+        onChanged: (value) {
+          context.read<HomeProvider>().searchAnalysisHistory(value);
         },
       ),
     );
@@ -192,71 +191,78 @@ class _HomePageState extends State<HomePage> {
     HomeProvider provider,
     List<AnalysisHistory> listAnalysisHistory,
   ) {
-    return ListView.separated(
-      padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 32),
-      itemBuilder: (context, index) {
-        return ItemAnalysisHistoryCard(
-          history: listAnalysisHistory[index],
-          onClick: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return ChangeNotifierProvider(
-                    create: (context) => AnalysisResultProvider(
-                      listAnalysisHistory[index],
-                      context.read<FirestoreService>(),
-                    ),
-                    child: const AnalysisResultPage(),
-                  );
-                },
-              ),
-            );
-          },
-          onDelete: () async {
-            final result = await showModalBottomSheet(
-              context: context,
-              backgroundColor: Colors.transparent,
-              builder: (context) {
-                return BottomSheetDeleteAnalysisHistory(
-                  analysisHistory: listAnalysisHistory[index],
-                  onDelete: () {
-                    Navigator.pop(context, true);
-                  },
-                  onCancel: () {
-                    Navigator.pop(context, false);
-                  },
+    return SafeArea(
+      top: false,
+      bottom: true,
+      child: RefreshIndicator(
+        onRefresh: provider.fetchAnalysisHistoryList,
+        child: ListView.separated(
+          padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 32),
+          itemBuilder: (context, index) {
+            return ItemAnalysisHistoryCard(
+              history: listAnalysisHistory[index],
+              onClick: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return ChangeNotifierProvider(
+                        create: (context) => AnalysisResultProvider(
+                          listAnalysisHistory[index],
+                          context.read<FirestoreService>(),
+                        ),
+                        child: const AnalysisResultPage(),
+                      );
+                    },
+                  ),
                 );
               },
-            );
-
-            if (result != null && result) {
-              if (mounted) {
-                showProgressDialog(context, 'Menghapus data...');
-                final isDeleteSuccess = await provider.deleteAnalysisHistory(
-                  listAnalysisHistory[index].id.toString(),
+              onDelete: () async {
+                final result = await showModalBottomSheet(
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  builder: (context) {
+                    return BottomSheetDeleteAnalysisHistory(
+                      analysisHistory: listAnalysisHistory[index],
+                      onDelete: () {
+                        Navigator.pop(context, true);
+                      },
+                      onCancel: () {
+                        Navigator.pop(context, false);
+                      },
+                    );
+                  },
                 );
-                // close the progress dialog
-                Navigator.pop(context);
-                if (isDeleteSuccess) {
-                  provider.fetchAnalysisHistoryList();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Gagal menghapus data'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
+
+                if (result != null && result) {
+                  if (mounted) {
+                    showProgressDialog(context, 'Menghapus data...');
+                    final isDeleteSuccess = await provider.deleteAnalysisHistory(
+                      listAnalysisHistory[index].id.toString(),
+                    );
+                    // close the progress dialog
+                    Navigator.pop(context);
+                    if (isDeleteSuccess) {
+                      provider.fetchAnalysisHistoryList();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Gagal menghapus data'),
+                          duration: Duration(seconds: 1),
+                        ),
+                      );
+                    }
+                  }
                 }
-              }
-            }
+              },
+            );
           },
-        );
-      },
-      separatorBuilder: (context, index) {
-        return const SizedBox(height: 16);
-      },
-      itemCount: listAnalysisHistory.length,
+          separatorBuilder: (context, index) {
+            return const SizedBox(height: 16);
+          },
+          itemCount: listAnalysisHistory.length,
+        ),
+      ),
     );
   }
 }

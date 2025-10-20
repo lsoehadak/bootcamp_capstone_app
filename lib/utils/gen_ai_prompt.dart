@@ -14,13 +14,9 @@ class GenAiPrompt {
 
 Data Anak Input:
 
-Nama Anak: ${history.name}
-
 Jenis Kelamin: ${history.gender}
 
 Tinggi Badan:  ${history.height} cm
-
-Berat Badan:  ${history.weight} kg
 
 Usia:  ${history.ageInMonth} Bulan
 

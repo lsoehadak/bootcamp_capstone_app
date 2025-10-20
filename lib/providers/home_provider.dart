@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:capstone_app/services/firestore_service.dart';
 import 'package:capstone_app/utils/ui_state.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,9 @@ class HomeProvider extends ChangeNotifier {
   UiState<List<AnalysisHistory>> _uiState = UiNoneState();
 
   UiState<List<AnalysisHistory>> get uiState => _uiState;
+
+  Timer? _debounce;
+  final Duration _debounceDuration = const Duration(milliseconds: 500);
 
   final _analysisHistoryList = <AnalysisHistory>[];
   final _filteredAnalysisHistoryList = <AnalysisHistory>[];
@@ -35,7 +40,7 @@ class HomeProvider extends ChangeNotifier {
       } else {
         _analysisHistoryList.clear();
         _analysisHistoryList.addAll(analysisHistory);
-        filterAnalysisHistoryList('');
+        _filterAnalysisHistoryList('');
 
         _uiState = UiSuccessState(_filteredAnalysisHistoryList);
       }
@@ -46,7 +51,17 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
-  void filterAnalysisHistoryList(String keyword) {
+  void searchAnalysisHistory(String keyword) {
+    if (_debounce?.isActive ?? false) {
+      _debounce?.cancel();
+    }
+
+    _debounce = Timer(_debounceDuration, () {
+      _filterAnalysisHistoryList(keyword);
+    });
+  }
+
+  void _filterAnalysisHistoryList(String keyword) {
     _uiState = UiLoadingState<List<AnalysisHistory>>();
     notifyListeners();
 

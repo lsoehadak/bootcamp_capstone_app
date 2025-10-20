@@ -29,7 +29,7 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
 
     if (resultState is UiErrorState<bool>) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _showErrorMessage(resultState.errorMessage);
+        _showErrorMessage(resultState.errorTitle, resultState.errorMessage);
       });
     } else if (resultState is UiSuccessState<bool>) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -155,7 +155,9 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
                       ? Padding(
                           padding: const EdgeInsets.only(top: 24),
                           child: CustomDefaultButton(
-                            label: provider.isDataUpdated && !provider.analysisHistory.isNewData
+                            label:
+                                provider.isDataUpdated &&
+                                    !provider.analysisHistory.isNewData
                                 ? 'Simpan Ulang'
                                 : 'Simpan Hasil Analisa',
                             isLoading: provider.uiState is UiLoadingState,
@@ -291,7 +293,9 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
             _showProgressDialog(context);
             final result = await provider.getRecommendation();
             if (mounted) {
+              // close progress dialog
               Navigator.pop(context);
+
               if (result) {
                 Navigator.push(
                   context,
@@ -300,6 +304,11 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
                       recommendationContent: provider.recommendation ?? '',
                     ),
                   ),
+                );
+              } else {
+                _showErrorMessage(
+                  'Gagal mengambil rekomendasi',
+                  'Silahkan coba lagi dan pastikan perangkat terhubung dengan internet',
                 );
               }
             }
@@ -336,9 +345,25 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
     );
   }
 
-  void _showErrorMessage(String message) {
+  void _showErrorMessage(String title, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), duration: const Duration(seconds: 1)),
+      SnackBar(
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: AppTextStyles.bodyText.copyWith(color: Colors.white),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              message,
+              style: AppTextStyles.bodySmallText.copyWith(color: Colors.white),
+            ),
+          ],
+        ),
+        duration: const Duration(seconds: 2),
+      ),
     );
     context.read<AnalysisResultProvider>().resetState();
   }
