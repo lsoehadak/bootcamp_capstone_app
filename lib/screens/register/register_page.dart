@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/register_provider.dart';
+import '../../utils/ui_state.dart';
 import '../common/widgets/custom_button.dart';
+import '../common/widgets/custom_snackbar.dart';
 import '../common/widgets/custom_text_field.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -21,6 +23,18 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final resultState = context.watch<RegisterProvider>().uiState;
+
+    if (resultState is UiErrorState<bool>) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showErrorMessage(resultState.errorTitle, resultState.errorMessage);
+      });
+    } else if (resultState is UiSuccessState<bool>) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pop(context, true);
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text('')),
       body: Padding(
@@ -103,7 +117,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 CustomDefaultButton(
                   label: 'Buat',
                   isEnabled: provider.isFormCompleted,
-                  onClick: () {},
+                  isLoading: provider.uiState is UiLoadingState,
+                  onClick: () {
+                    provider.register(
+                      _emailController.text,
+                      _passwordController.text,
+                      _nameController.text,
+                    );
+                  },
                 ),
               ],
             );
@@ -118,5 +139,10 @@ class _RegisterPageState extends State<RegisterPage> {
         _emailController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty &&
         _confirmPasswordController.text.isNotEmpty;
+  }
+
+  void _showErrorMessage(String title, String message) {
+    showSnackBar(context, title, message);
+    context.read<RegisterProvider>().resetState();
   }
 }

@@ -40,7 +40,6 @@ class InputChildDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
   void changeFormCompletionStatus(bool status) {
     _isFormCompleted = status;
     notifyListeners();

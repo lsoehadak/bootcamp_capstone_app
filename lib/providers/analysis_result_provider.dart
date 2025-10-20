@@ -1,4 +1,5 @@
 import 'package:capstone_app/models/analysis_history.dart';
+import 'package:capstone_app/services/auth_service.dart';
 import 'package:capstone_app/services/firestore_service.dart';
 import 'package:capstone_app/utils/gen_ai_prompt.dart';
 import 'package:capstone_app/utils/ui_state.dart';
@@ -8,8 +9,10 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import '../env/env.dart';
 
 class AnalysisResultProvider extends ChangeNotifier {
-  final AnalysisHistory _analysisHistory;
   final FirestoreService _firestoreService;
+  final AuthService _authService;
+
+  final AnalysisHistory _analysisHistory;
 
   AnalysisHistory get analysisHistory => _analysisHistory;
 
@@ -17,7 +20,11 @@ class AnalysisResultProvider extends ChangeNotifier {
 
   String? get recommendation => _recommendation;
 
-  AnalysisResultProvider(this._analysisHistory, this._firestoreService) {
+  AnalysisResultProvider(
+    this._analysisHistory,
+    this._firestoreService,
+    this._authService,
+  ) {
     _recommendation = _analysisHistory.recommendation;
   }
 
@@ -63,11 +70,11 @@ class AnalysisResultProvider extends ChangeNotifier {
       analysisHistory.recommendation = _recommendation;
       final result = isDataUpdated && !analysisHistory.isNewData
           ? await _firestoreService.updateAnalysisHistory(
-              'UID123',
+              _authService.currentUser!.uid,
               analysisHistory,
             )
           : await _firestoreService.saveAnalysisHistory(
-              'UID123',
+              _authService.currentUser!.uid,
               analysisHistory,
             );
       if (result) {

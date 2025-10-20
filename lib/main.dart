@@ -1,7 +1,9 @@
 import 'package:capstone_app/firebase_options.dart';
 import 'package:capstone_app/providers/home_provider.dart';
 import 'package:capstone_app/providers/login_provider.dart';
+import 'package:capstone_app/providers/splash_screen_provider.dart';
 import 'package:capstone_app/services/api_service.dart';
+import 'package:capstone_app/services/auth_service.dart';
 import 'package:capstone_app/services/firestore_service.dart';
 import 'package:capstone_app/services/tf_lite_service.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,9 +15,6 @@ import 'package:provider/provider.dart';
 import 'app.dart';
 
 void main() async {
-  // Jika menggunakan Firebase, pastikan setup sudah benar lalu uncomment baris di bawah:
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -37,13 +36,21 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider(create: (context) => ApiService()),
+        Provider(create: (context) => AuthService()),
         Provider(create: (context) => FirestoreService()),
         Provider(create: (context) => TFLiteService()),
         ChangeNotifierProvider(
-          create: (context) => LoginProvider(context.read<ApiService>()),
+          create: (context) =>
+              SplashScreenProvider(context.read<AuthService>())..init(),
         ),
         ChangeNotifierProvider(
-          create: (context) => HomeProvider(context.read<FirestoreService>()),
+          create: (context) => LoginProvider(context.read<AuthService>()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => HomeProvider(
+            context.read<FirestoreService>(),
+            context.read<AuthService>(),
+          ),
         ),
       ],
       child: const App(),

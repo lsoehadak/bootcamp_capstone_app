@@ -1,13 +1,15 @@
 import 'package:capstone_app/providers/login_provider.dart';
 import 'package:capstone_app/screens/common/widgets/custom_button.dart';
 import 'package:capstone_app/screens/common/widgets/custom_text_field.dart';
+import 'package:capstone_app/services/auth_service.dart';
 import 'package:capstone_app/utils/app_text_styles.dart';
+import 'package:capstone_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/home_provider.dart';
 import '../../providers/register_provider.dart';
-import '../../services/api_service.dart';
+import '../../utils/ui_state.dart';
+import '../common/widgets/custom_snackbar.dart';
 import '../home/home_page.dart';
 import '../register/register_page.dart';
 
@@ -31,6 +33,20 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final resultState = context
+        .watch<LoginProvider>()
+        .uiState;
+
+    if (resultState is UiErrorState<bool>) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showErrorMessage(resultState.errorTitle, resultState.errorMessage);
+      });
+    } else if (resultState is UiSuccessState<bool>) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _toHomePage();
+      });
+    }
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -47,13 +63,16 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Selamat Datang di App',
-                    style: AppTextStyles.titleText.copyWith(fontSize: 24),
+                    appName,
+                    style: AppTextStyles.titleText.copyWith(fontSize: 28),
                   ),
                   const SizedBox(height: 4),
+                  const Text('Deteksi Cepat, Cegah Dini Stunting Balita Anda',
+                    style: AppTextStyles.bodyText,),
+                  const SizedBox(height: 4),
                   const Text(
-                    'Silahkan login terlebih dahulu untuk menikmati seluruh fitur aplikasi',
-                    style: AppTextStyles.bodyLowEmText,
+                    'Silakan login dan masukkan data anak Anda untuk memulai analisis risiko stunting',
+                    style: AppTextStyles.bodySmallLowEmText,
                   ),
                   const SizedBox(height: 32),
                   const Text('Email', style: AppTextStyles.labelText),
@@ -88,12 +107,11 @@ class _LoginPageState extends State<LoginPage> {
                   CustomDefaultButton(
                     label: 'Masuk',
                     isEnabled: provider.isFormCompleted,
+                    isLoading: provider.uiState is UiLoadingState,
                     onClick: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ),
+                      provider.login(
+                        _emailController.text,
+                        _passwordController.text,
                       );
                     },
                   ),
@@ -107,19 +125,29 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 16),
                   CustomOutlinedButton(
                     label: 'Buat Akun',
-                    onClick: () {
-                      Navigator.push(
+                    onClick: () async {
+                      final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) {
                             return ChangeNotifierProvider(
                               create: (context) =>
-                                  RegisterProvider(context.read<ApiService>()),
+                                  RegisterProvider(context.read<AuthService>()),
                               child: const RegisterPage(),
                             );
                           },
                         ),
                       );
+
+                      if (result != null && result) {
+                        if (context.mounted) {
+                          showSnackBar(
+                            context,
+                            'Berhasil Membuat Akun',
+                            'Silahkan melakukan login dengan akun yang baru saja dibuat',
+                          );
+                        }
+                      }
                     },
                   ),
                 ],
@@ -134,5 +162,22 @@ class _LoginPageState extends State<LoginPage> {
   bool _checkAllFieldsFilled() {
     return _emailController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty;
+  }
+
+  void _showErrorMessage(String title, String message) {
+    showSnackBar(context, title, message);
+    context.read<LoginProvider>().resetState();
+  }
+
+  void _toHomePage() {
+    context.read<LoginProvider>().resetState();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return const HomePage();
+        },
+      ),
+    );
   }
 }

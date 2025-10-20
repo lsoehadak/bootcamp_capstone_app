@@ -3,6 +3,7 @@ import 'package:capstone_app/screens/common/widgets/custom_button.dart';
 import 'package:capstone_app/screens/common/widgets/custom_card.dart';
 import 'package:capstone_app/screens/common/widgets/custom_dialog.dart';
 import 'package:capstone_app/screens/common/widgets/custom_divider.dart';
+import 'package:capstone_app/screens/common/widgets/custom_snackbar.dart';
 import 'package:capstone_app/screens/home/home_page.dart';
 import 'package:capstone_app/utils/app_colors.dart';
 import 'package:capstone_app/utils/app_text_styles.dart';
@@ -346,25 +347,7 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
   }
 
   void _showErrorMessage(String title, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: AppTextStyles.bodyText.copyWith(color: Colors.white),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              message,
-              style: AppTextStyles.bodySmallText.copyWith(color: Colors.white),
-            ),
-          ],
-        ),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    showSnackBar(context, title, message);
     context.read<AnalysisResultProvider>().resetState();
   }
 

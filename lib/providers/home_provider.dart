@@ -1,15 +1,24 @@
 import 'dart:async';
 
+import 'package:capstone_app/services/auth_service.dart';
 import 'package:capstone_app/services/firestore_service.dart';
 import 'package:capstone_app/utils/ui_state.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../models/analysis_history.dart';
 
 class HomeProvider extends ChangeNotifier {
   final FirestoreService _firestoreService;
+  final AuthService _authService;
 
-  HomeProvider(this._firestoreService);
+  late User? _user;
+
+  User? get user => _user;
+
+  HomeProvider(this._firestoreService, this._authService) {
+    _user = _authService.currentUser;
+  }
 
   UiState<List<AnalysisHistory>> _uiState = UiNoneState();
 
@@ -30,7 +39,7 @@ class HomeProvider extends ChangeNotifier {
 
     try {
       final analysisHistory = await _firestoreService.getAnalysisHistoryList(
-        'UID123',
+        _authService.currentUser!.uid,
       );
       if (analysisHistory.isEmpty) {
         _uiState = UiEmptyState(
@@ -87,7 +96,7 @@ class HomeProvider extends ChangeNotifier {
   Future<bool> deleteAnalysisHistory(String analysisHistoryId) async {
     try {
       final result = await _firestoreService.deleteAnalysisHistory(
-        'UID123',
+        _authService.currentUser!.uid,
         analysisHistoryId,
       );
       return result;

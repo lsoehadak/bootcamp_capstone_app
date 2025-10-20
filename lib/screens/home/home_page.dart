@@ -1,5 +1,6 @@
 import 'package:capstone_app/models/analysis_history.dart';
 import 'package:capstone_app/providers/home_provider.dart';
+import 'package:capstone_app/providers/profile_provider.dart';
 import 'package:capstone_app/screens/common/empty_state_view.dart';
 import 'package:capstone_app/screens/common/error_state_view.dart';
 import 'package:capstone_app/screens/common/widgets/custom_dialog.dart';
@@ -7,6 +8,7 @@ import 'package:capstone_app/screens/home/widgets/bottom_sheet_delete_analysis_h
 import 'package:capstone_app/screens/home/widgets/item_analysis_history_card.dart';
 import 'package:capstone_app/screens/input_child_data/input_child_data_page.dart';
 import 'package:capstone_app/screens/profile/profile_page.dart';
+import 'package:capstone_app/services/auth_service.dart';
 import 'package:capstone_app/services/firestore_service.dart';
 import 'package:capstone_app/services/tf_lite_service.dart';
 import 'package:capstone_app/utils/app_colors.dart';
@@ -119,8 +121,9 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                // TODO get data from provider
-                const NameAvatar(name: 'Luthfi'),
+                NameAvatar(
+                  name: context.read<HomeProvider>().user?.displayName ?? '',
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -134,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'Luthfi Soehadak',
+                        context.read<HomeProvider>().user?.displayName ?? '',
                         style: AppTextStyles.bodyHiEmText.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
@@ -146,11 +149,16 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(width: 12),
                 GestureDetector(
                   onTap: () {
-                    // TODO go to setting page
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ProfilePage(),
+                        builder: (context) {
+                          return ChangeNotifierProvider(
+                            create: (context) =>
+                                ProfileProvider(context.read<AuthService>()),
+                            child: const ProfilePage(),
+                          );
+                        },
                       ),
                     );
                   },
@@ -197,7 +205,12 @@ class _HomePageState extends State<HomePage> {
       child: RefreshIndicator(
         onRefresh: provider.fetchAnalysisHistoryList,
         child: ListView.separated(
-          padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 32),
+          padding: const EdgeInsets.only(
+            top: 16,
+            left: 16,
+            right: 16,
+            bottom: 32,
+          ),
           itemBuilder: (context, index) {
             return ItemAnalysisHistoryCard(
               history: listAnalysisHistory[index],
@@ -210,6 +223,7 @@ class _HomePageState extends State<HomePage> {
                         create: (context) => AnalysisResultProvider(
                           listAnalysisHistory[index],
                           context.read<FirestoreService>(),
+                          context.read<AuthService>(),
                         ),
                         child: const AnalysisResultPage(),
                       );
@@ -235,23 +249,25 @@ class _HomePageState extends State<HomePage> {
                 );
 
                 if (result != null && result) {
-                  if (mounted) {
-                    showProgressDialog(context, 'Menghapus data...');
-                    final isDeleteSuccess = await provider.deleteAnalysisHistory(
-                      listAnalysisHistory[index].id.toString(),
+                  if (!context.mounted) return;
+                  showProgressDialog(context, 'Menghapus data...');
+                  final isDeleteSuccess = await provider
+                      .deleteAnalysisHistory(
+                    listAnalysisHistory[index].id.toString(),
+                  );
+
+                  // close the progress dialog
+                  if (!context.mounted) return;
+                  Navigator.pop(context);
+                  if (isDeleteSuccess) {
+                    provider.fetchAnalysisHistoryList();
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Gagal menghapus data'),
+                        duration: Duration(seconds: 1),
+                      ),
                     );
-                    // close the progress dialog
-                    Navigator.pop(context);
-                    if (isDeleteSuccess) {
-                      provider.fetchAnalysisHistoryList();
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Gagal menghapus data'),
-                          duration: Duration(seconds: 1),
-                        ),
-                      );
-                    }
                   }
                 }
               },

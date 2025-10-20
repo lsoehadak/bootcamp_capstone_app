@@ -1,11 +1,12 @@
+import 'package:capstone_app/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
-import '../services/api_service.dart';
+import '../utils/ui_state.dart';
 
 class LoginProvider extends ChangeNotifier {
-  final ApiService _apiService;
+  final AuthService _authService;
 
-  LoginProvider(this._apiService);
+  LoginProvider(this._authService);
 
   bool _isPasswordObscured = true;
 
@@ -14,6 +15,10 @@ class LoginProvider extends ChangeNotifier {
   bool _isFormCompleted = false;
 
   bool get isFormCompleted => _isFormCompleted;
+
+  UiState<bool> _uiState = UiNoneState();
+
+  UiState<bool> get uiState => _uiState;
 
   void togglePasswordVisibility() {
     _isPasswordObscured = !_isPasswordObscured;
@@ -25,7 +30,26 @@ class LoginProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void login() async {
+  Future<void> login(String email, String password) async {
+    _uiState = UiLoadingState();
+    notifyListeners();
 
+    try {
+     await _authService.logIn(
+        email: email,
+        password: password,
+      );
+
+      _uiState = UiSuccessState(true);
+    } catch (e) {
+      _uiState = UiErrorState('Terjadi Kesalahan', e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  void resetState() {
+    _uiState = UiNoneState();
+    notifyListeners();
   }
 }

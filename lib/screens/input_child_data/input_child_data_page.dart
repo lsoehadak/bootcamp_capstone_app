@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/analysis_history.dart';
 import '../../providers/input_child_data_provider.dart';
+import '../../services/auth_service.dart';
 import '../analysis_result/analysis_result_page.dart';
 
 class InputChildDataPage extends StatefulWidget {
@@ -125,9 +126,10 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
                                   ),
                                   provider.isAgeInputValid
                                       ? Padding(
-                                          padding: const EdgeInsetsGeometry.only(
-                                            top: 8,
-                                          ),
+                                          padding:
+                                              const EdgeInsetsGeometry.only(
+                                                top: 8,
+                                              ),
                                           child: Text(
                                             'Usia maksimal 60 bulan',
                                             style: AppTextStyles.captionText
@@ -288,8 +290,11 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
       MaterialPageRoute(
         builder: (context) {
           return ChangeNotifierProvider(
-            create: (context) =>
-                AnalysisResultProvider(data, context.read<FirestoreService>()),
+            create: (context) => AnalysisResultProvider(
+              data,
+              context.read<FirestoreService>(),
+              context.read<AuthService>(),
+            ),
             child: const AnalysisResultPage(),
           );
         },
