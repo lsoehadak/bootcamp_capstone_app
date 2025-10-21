@@ -108,11 +108,11 @@ class CustomPasswordTextField extends StatelessWidget {
         suffixIcon: isObscure
             ? IconButton(
                 onPressed: onReveal,
-                icon: const Icon(Icons.visibility_off),
+                icon: const Icon(Icons.visibility),
               )
             : IconButton(
                 onPressed: onReveal,
-                icon: const Icon(Icons.visibility),
+                icon: const Icon(Icons.visibility_off),
               ),
         border: getMyInputBorder(),
         enabledBorder: getMyInputBorder(),

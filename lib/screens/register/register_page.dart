@@ -80,10 +80,12 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 const SizedBox(height: 16),
                 const Text('Password', style: AppTextStyles.labelText),
+                const SizedBox(height: 4),
+                const Text('* Password minimal 6 karakter', style: AppTextStyles.captionLowEmText,),
                 const SizedBox(height: 8),
                 CustomPasswordTextField(
                   controller: _passwordController,
-                  isObscure: true,
+                  isObscure: provider.isPasswordObscured,
                   hint: 'Masukkan Password',
                   onReveal: () {
                     provider.togglePasswordVisibility();
@@ -102,7 +104,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(height: 8),
                 CustomPasswordTextField(
                   controller: _confirmPasswordController,
-                  isObscure: true,
+                  isObscure: provider.isConfirmPasswordObscured,
                   hint: 'Masukkan Password',
                   onReveal: () {
                     provider.toggleConfirmPasswordVisibility();
@@ -138,7 +140,9 @@ class _RegisterPageState extends State<RegisterPage> {
     return _nameController.text.isNotEmpty &&
         _emailController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty &&
-        _confirmPasswordController.text.isNotEmpty;
+        _passwordController.text.length >= 6 &&
+        _confirmPasswordController.text.isNotEmpty &&
+        _passwordController.text == _confirmPasswordController.text;
   }
 
   void _showErrorMessage(String title, String message) {

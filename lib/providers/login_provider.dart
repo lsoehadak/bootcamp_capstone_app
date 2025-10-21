@@ -42,7 +42,7 @@ class LoginProvider extends ChangeNotifier {
 
       _uiState = UiSuccessState(true);
     } catch (e) {
-      _uiState = UiErrorState('Terjadi Kesalahan', e.toString());
+      _uiState = UiErrorState('Login Gagal', e.toString());
     } finally {
       notifyListeners();
     }

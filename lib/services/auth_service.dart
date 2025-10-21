@@ -14,16 +14,32 @@ class AuthService {
       await userCredential.user!.updateDisplayName(displayName);
       return true;
     } on FirebaseAuthException catch (e) {
-      throw Exception(e.message);
+      String errorMessage;
+
+      switch (e.code) {
+        case 'email-already-in-use':
+          errorMessage =
+              'Email ini sudah terdaftar. Silahkan gunakan email lain.';
+          break;
+        case 'invalid-email':
+          errorMessage = 'Format email tidak valid. Mohon periksa kembali.';
+          break;
+        case 'network-request-failed':
+          errorMessage =
+              'Terjadi masalah koneksi. Mohon periksa koneksi internet Anda dan coba lagi.';
+          break;
+        default:
+          errorMessage = 'Terjadi error yang tidak diketahui: ${e.message}';
+          break;
+      }
+
+      throw Exception(errorMessage);
     } catch (e) {
       throw Exception(e.toString());
     }
   }
 
-  Future<User?> logIn({
-    required String email,
-    required String password,
-  }) async {
+  Future<User?> logIn({required String email, required String password}) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
@@ -31,7 +47,26 @@ class AuthService {
       );
       return userCredential.user;
     } on FirebaseAuthException catch (e) {
-      throw Exception(e.message);
+      String errorMessage;
+
+      switch (e.code) {
+        case 'invalid-credential':
+          errorMessage =
+              'Silahkan cek kembali email atau password Anda dan coba lagi.';
+          break;
+        case 'invalid-email':
+          errorMessage = 'Format email tidak valid. Mohon periksa kembali.';
+          break;
+        case 'network-request-failed':
+          errorMessage =
+              'Terjadi masalah koneksi. Mohon periksa koneksi internet Anda dan coba lagi.';
+          break;
+        default:
+          errorMessage = 'Terjadi error yang tidak diketahui: ${e.message}';
+          break;
+      }
+
+      throw Exception(errorMessage);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -46,7 +81,6 @@ class AuthService {
     }
   }
 
-  // get current user
   User? get currentUser {
     return _auth.currentUser;
   }
