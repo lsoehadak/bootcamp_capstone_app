@@ -1,6 +1,6 @@
 import 'package:capstone_app/providers/splash_screen_provider.dart';
 import 'package:capstone_app/screens/home/home_page.dart';
-import 'package:capstone_app/screens/login/login_page.dart';
+import 'package:capstone_app/screens/welcome/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +23,7 @@ class SplashScreenPage extends StatelessWidget {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
+          MaterialPageRoute(builder: (context) => const WelcomePage()),
         );
       });
     }

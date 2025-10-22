@@ -67,7 +67,7 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
                       children: [
                         const Text(
                           'Masukkan data anak balita Anda sesuai form di bawah untuk melakukan analisis.',
-                          style: AppTextStyles.bodyLowEmText,
+                          style: AppTextStyles.bodyText,
                         ),
                         const SizedBox(height: 24),
                         const Text(
@@ -217,7 +217,7 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   child: CustomDefaultButton(
-                    label: 'Analisa',
+                    label: 'Analisis',
                     isEnabled: provider.isFormCompleted,
                     isLoading: provider.uiState is UiLoadingState,
                     onClick: () async {

@@ -43,8 +43,8 @@ class HomeProvider extends ChangeNotifier {
       );
       if (analysisHistory.isEmpty) {
         _uiState = UiEmptyState(
-          'Belum Ada Riwayat Analisa',
-          'Untuk mulai melakukan pengecekan dengan menekan tombol +. Riwayat analisa yang disimpan akan muncul di sini',
+          'Belum Ada Riwayat Analisis',
+          'Untuk mulai melakukan pengecekan dengan menekan tombol +. Riwayat analisis yang disimpan akan muncul di sini',
         );
       } else {
         _analysisHistoryList.clear();

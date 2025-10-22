@@ -39,7 +39,7 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Hasil Analisa')),
+      appBar: AppBar(title: const Text('Hasil Analisis')),
       body: SafeArea(
         top: false,
         bottom: true,
@@ -56,7 +56,7 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        'Tanggal Analisa',
+                        'Tanggal Analisis',
                         style: AppTextStyles.bodySmallText,
                       ),
                       Text(
@@ -160,7 +160,7 @@ class _AnalysisResultPageState extends State<AnalysisResultPage> {
                                 provider.isDataUpdated &&
                                     !provider.analysisHistory.isNewData
                                 ? 'Simpan Ulang'
-                                : 'Simpan Hasil Analisa',
+                                : 'Simpan Hasil Analisis',
                             isLoading: provider.uiState is UiLoadingState,
                             onClick: () async {
                               await provider.saveAnalysis();

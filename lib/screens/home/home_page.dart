@@ -55,35 +55,42 @@ class _HomePageState extends State<HomePage> {
           _buildAppBar(),
           _buildSearchBar(),
           Expanded(
-            child: Consumer<HomeProvider>(
-              builder: (context, provider, child) {
-                return switch (provider.uiState) {
-                  UiNoneState<List<AnalysisHistory>>() => const SizedBox(),
-                  UiLoadingState<List<AnalysisHistory>>() => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  UiSuccessState<List<AnalysisHistory>>(
-                    data: var analysisHistoryList,
-                  ) =>
-                    _buildLoadedStateView(provider, analysisHistoryList),
-                  UiErrorState<List<AnalysisHistory>>(
-                    errorTitle: var title,
-                    errorMessage: var message,
-                  ) =>
-                    ErrorStateView(
-                      title: title,
-                      message: message,
-                      onRefresh: () {
-                        provider.fetchAnalysisHistoryList();
-                      },
+            child: SafeArea(
+              top: false,
+              child: Consumer<HomeProvider>(
+                builder: (context, provider, child) {
+                  return switch (provider.uiState) {
+                    UiNoneState<List<AnalysisHistory>>() => const SizedBox(),
+                    UiLoadingState<List<AnalysisHistory>>() => const Center(
+                      child: CircularProgressIndicator(),
                     ),
-                  UiEmptyState<List<AnalysisHistory>>(
-                    title: var title,
-                    message: var message,
-                  ) =>
-                    EmptyStateView(title: title, message: message),
-                };
-              },
+                    UiSuccessState<List<AnalysisHistory>>(
+                      data: var analysisHistoryList,
+                    ) =>
+                      _buildLoadedStateView(provider, analysisHistoryList),
+                    UiErrorState<List<AnalysisHistory>>(
+                      errorTitle: var title,
+                      errorMessage: var message,
+                    ) =>
+                      ErrorStateView(
+                        title: title,
+                        message: message,
+                        onRefresh: () {
+                          provider.fetchAnalysisHistoryList();
+                        },
+                      ),
+                    UiEmptyState<List<AnalysisHistory>>(
+                      title: var title,
+                      message: var message,
+                    ) =>
+                      EmptyStateView(
+                        imagePath: 'assets/icons/il_welcome_crop.png',
+                        title: title,
+                        message: message,
+                      ),
+                  };
+                },
+              ),
             ),
           ),
         ],
@@ -199,85 +206,80 @@ class _HomePageState extends State<HomePage> {
     HomeProvider provider,
     List<AnalysisHistory> listAnalysisHistory,
   ) {
-    return SafeArea(
-      top: false,
-      bottom: true,
-      child: RefreshIndicator(
-        onRefresh: provider.fetchAnalysisHistoryList,
-        child: ListView.separated(
-          padding: const EdgeInsets.only(
-            top: 16,
-            left: 16,
-            right: 16,
-            bottom: 32,
-          ),
-          itemBuilder: (context, index) {
-            return ItemAnalysisHistoryCard(
-              history: listAnalysisHistory[index],
-              onClick: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return ChangeNotifierProvider(
-                        create: (context) => AnalysisResultProvider(
-                          listAnalysisHistory[index],
-                          context.read<FirestoreService>(),
-                          context.read<AuthService>(),
-                        ),
-                        child: const AnalysisResultPage(),
-                      );
-                    },
-                  ),
-                );
-              },
-              onDelete: () async {
-                final result = await showModalBottomSheet(
-                  context: context,
-                  backgroundColor: Colors.transparent,
+    return RefreshIndicator(
+      onRefresh: provider.fetchAnalysisHistoryList,
+      child: ListView.separated(
+        padding: const EdgeInsets.only(
+          top: 16,
+          left: 16,
+          right: 16,
+          bottom: 32,
+        ),
+        itemBuilder: (context, index) {
+          return ItemAnalysisHistoryCard(
+            history: listAnalysisHistory[index],
+            onClick: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
                   builder: (context) {
-                    return BottomSheetDeleteAnalysisHistory(
-                      analysisHistory: listAnalysisHistory[index],
-                      onDelete: () {
-                        Navigator.pop(context, true);
-                      },
-                      onCancel: () {
-                        Navigator.pop(context, false);
-                      },
+                    return ChangeNotifierProvider(
+                      create: (context) => AnalysisResultProvider(
+                        listAnalysisHistory[index],
+                        context.read<FirestoreService>(),
+                        context.read<AuthService>(),
+                      ),
+                      child: const AnalysisResultPage(),
                     );
                   },
+                ),
+              );
+            },
+            onDelete: () async {
+              final result = await showModalBottomSheet(
+                context: context,
+                backgroundColor: Colors.transparent,
+                builder: (context) {
+                  return BottomSheetDeleteAnalysisHistory(
+                    analysisHistory: listAnalysisHistory[index],
+                    onDelete: () {
+                      Navigator.pop(context, true);
+                    },
+                    onCancel: () {
+                      Navigator.pop(context, false);
+                    },
+                  );
+                },
+              );
+
+              if (result != null && result) {
+                if (!context.mounted) return;
+                showProgressDialog(context, 'Menghapus data...');
+                final isDeleteSuccess = await provider.deleteAnalysisHistory(
+                  listAnalysisHistory[index].id.toString(),
                 );
 
-                if (result != null && result) {
-                  if (!context.mounted) return;
-                  showProgressDialog(context, 'Menghapus data...');
-                  final isDeleteSuccess = await provider
-                      .deleteAnalysisHistory(
-                    listAnalysisHistory[index].id.toString(),
+                // close the progress dialog
+                if (!context.mounted) return;
+                Navigator.pop(context);
+                if (isDeleteSuccess) {
+                  provider.fetchAnalysisHistoryList();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Gagal menghapus data'),
+                      duration: Duration(seconds: 1),
+                    ),
                   );
-
-                  // close the progress dialog
-                  if (!context.mounted) return;
-                  Navigator.pop(context);
-                  if (isDeleteSuccess) {
-                    provider.fetchAnalysisHistoryList();
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Gagal menghapus data'),
-                        duration: Duration(seconds: 1),
-                      ),
-                    );
-                  }
                 }
-              },
-            );
-          },
-          separatorBuilder: (context, index) {
-            return const SizedBox(height: 16);
-          },
-          itemCount: listAnalysisHistory.length,
-        ),
+              }
+            },
+          );
+        },
+        separatorBuilder: (context, index) {
+          return const SizedBox(height: 16);
+        },
+        itemCount: listAnalysisHistory.length,
       ),
     );
   }

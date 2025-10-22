@@ -2,8 +2,8 @@ import 'package:capstone_app/providers/profile_provider.dart';
 import 'package:capstone_app/screens/common/widgets/custom_button.dart';
 import 'package:capstone_app/screens/common/widgets/custom_card.dart';
 import 'package:capstone_app/screens/common/widgets/custom_divider.dart';
-import 'package:capstone_app/screens/login/login_page.dart';
 import 'package:capstone_app/screens/profile/item_menu.dart';
+import 'package:capstone_app/screens/welcome/welcome_page.dart';
 import 'package:capstone_app/widgets/name_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -89,7 +89,7 @@ class ProfilePage extends StatelessWidget {
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
+                            builder: (context) => const WelcomePage(),
                           ),
                               (Route<dynamic> route) => false,
                         );

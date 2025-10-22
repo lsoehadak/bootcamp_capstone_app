@@ -1,8 +1,6 @@
 import 'package:capstone_app/firebase_options.dart';
 import 'package:capstone_app/providers/home_provider.dart';
-import 'package:capstone_app/providers/login_provider.dart';
 import 'package:capstone_app/providers/splash_screen_provider.dart';
-import 'package:capstone_app/services/api_service.dart';
 import 'package:capstone_app/services/auth_service.dart';
 import 'package:capstone_app/services/firestore_service.dart';
 import 'package:capstone_app/services/tf_lite_service.dart';
@@ -35,16 +33,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider(create: (context) => ApiService()),
         Provider(create: (context) => AuthService()),
         Provider(create: (context) => FirestoreService()),
         Provider(create: (context) => TFLiteService()),
         ChangeNotifierProvider(
           create: (context) =>
               SplashScreenProvider(context.read<AuthService>())..init(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => LoginProvider(context.read<AuthService>()),
         ),
         ChangeNotifierProvider(
           create: (context) => HomeProvider(

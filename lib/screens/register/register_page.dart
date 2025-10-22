@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/register_provider.dart';
+import '../../utils/app_colors.dart';
 import '../../utils/ui_state.dart';
 import '../common/widgets/custom_button.dart';
 import '../common/widgets/custom_snackbar.dart';
@@ -37,13 +38,28 @@ class _RegisterPageState extends State<RegisterPage> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
         child: Consumer<RegisterProvider>(
           builder: (context, provider, child) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                  width: 75,
+                  height: 75,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.mainThemeColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Image.asset(
+                    'assets/icons/logo_app.png',
+                    color: Colors.white,
+                    colorBlendMode: BlendMode.srcATop,
+                  ),
+                ),
+                const SizedBox(height: 24),
                 Text(
                   'Buat Akun Baru',
                   style: AppTextStyles.titleText.copyWith(fontSize: 20),
@@ -53,7 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   'Silahkan lengkapi form di bawah ini untuk membuat akun baru',
                   style: AppTextStyles.bodyLowEmText,
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 24),
                 const Text('Nama', style: AppTextStyles.labelText),
                 const SizedBox(height: 8),
                 CustomDefaultTextField(
