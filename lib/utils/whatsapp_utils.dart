@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<void> openWhatsapp(BuildContext context, String displayName) async {
-  const String cleanedNumber = '+6282257663659';
+  const String cleanedNumber = '+6285134703582';
   final String defaultMessage =
       'Halo saya $displayName, ingin bertanya tentang ...';
 
