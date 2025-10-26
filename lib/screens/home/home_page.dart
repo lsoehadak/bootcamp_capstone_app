@@ -4,6 +4,7 @@ import 'package:capstone_app/providers/profile_provider.dart';
 import 'package:capstone_app/screens/common/empty_state_view.dart';
 import 'package:capstone_app/screens/common/error_state_view.dart';
 import 'package:capstone_app/screens/common/widgets/custom_dialog.dart';
+import 'package:capstone_app/screens/common/widgets/custom_snackbar.dart';
 import 'package:capstone_app/screens/home/widgets/bottom_sheet_delete_analysis_history.dart';
 import 'package:capstone_app/screens/home/widgets/item_analysis_history_card.dart';
 import 'package:capstone_app/screens/input_child_data/input_child_data_page.dart';
@@ -36,6 +37,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    context.read<HomeProvider>().initUserData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HomeProvider>().fetchAnalysisHistoryList();
     });
@@ -128,10 +130,6 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                NameAvatar(
-                  name: context.read<HomeProvider>().user?.displayName ?? '',
-                ),
-                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,14 +167,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                     );
                   },
-                  child: const CircleAvatar(
-                    radius: 18,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.settings,
-                      color: AppColors.mainThemeColor,
-                      size: 24,
-                    ),
+                  child: NameAvatar(
+                    name: context.read<HomeProvider>().user?.displayName ?? '',
                   ),
                 ),
               ],
@@ -265,11 +257,10 @@ class _HomePageState extends State<HomePage> {
                 if (isDeleteSuccess) {
                   provider.fetchAnalysisHistoryList();
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Gagal menghapus data'),
-                      duration: Duration(seconds: 1),
-                    ),
+                  showSnackBar(
+                    context,
+                    'Gagal Menghapus Data',
+                    'Silahkan coba lagi dan pastikan perangkat terhubung dengan internet',
                   );
                 }
               }

@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../models/analysis_history.dart';
+import '../utils/connection_utils.dart';
 
 class HomeProvider extends ChangeNotifier {
   final FirestoreService _firestoreService;
@@ -16,9 +17,7 @@ class HomeProvider extends ChangeNotifier {
 
   User? get user => _user;
 
-  HomeProvider(this._firestoreService, this._authService) {
-    _user = _authService.currentUser;
-  }
+  HomeProvider(this._firestoreService, this._authService);
 
   UiState<List<AnalysisHistory>> _uiState = UiNoneState();
 
@@ -32,6 +31,10 @@ class HomeProvider extends ChangeNotifier {
 
   List<AnalysisHistory> get filteredAnalysisHistoryList =>
       _filteredAnalysisHistoryList;
+
+  void initUserData() {
+    _user = _authService.currentUser;
+  }
 
   Future<void> fetchAnalysisHistoryList() async {
     _uiState = UiLoadingState();
@@ -94,13 +97,19 @@ class HomeProvider extends ChangeNotifier {
   }
 
   Future<bool> deleteAnalysisHistory(String analysisHistoryId) async {
-    try {
-      final result = await _firestoreService.deleteAnalysisHistory(
-        _authService.currentUser!.uid,
-        analysisHistoryId,
-      );
-      return result;
-    } catch (e) {
+    final isConnected = await checkInternetConnection();
+
+    if (isConnected) {
+      try {
+        final result = await _firestoreService.deleteAnalysisHistory(
+          _authService.currentUser!.uid,
+          analysisHistoryId,
+        );
+        return result;
+      } catch (e) {
+        return false;
+      }
+    } else {
       return false;
     }
   }

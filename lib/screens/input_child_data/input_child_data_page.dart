@@ -149,35 +149,6 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
                         const SizedBox(height: 16),
                         Row(
                           children: [
-                            // Expanded(
-                            //   flex: 1,
-                            //   child: Column(
-                            //     crossAxisAlignment: CrossAxisAlignment.start,
-                            //     children: [
-                            //       const Text(
-                            //         'Berat Badan',
-                            //         style: AppTextStyles.labelText,
-                            //       ),
-                            //       const SizedBox(height: 8),
-                            //       CustomDefaultTextField(
-                            //         controller: _weightController,
-                            //         hint: '',
-                            //         keyboardType: TextInputType.number,
-                            //         isDigitOnly: true,
-                            //         suffix: const Text(
-                            //           'kg',
-                            //           style: AppTextStyles.bodyLowEmText,
-                            //         ),
-                            //         onChanged: (value) {
-                            //           provider.changeFormCompletionStatus(
-                            //             _checkAllFieldsFilled(),
-                            //           );
-                            //         },
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
-                            // const SizedBox(width: 12),
                             Expanded(
                               flex: 1,
                               child: Column(
@@ -210,6 +181,8 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
                             const Expanded(flex: 1, child: SizedBox()),
                           ],
                         ),
+                        const SizedBox(height: 16),
+                        _build3TRadio(provider),
                       ],
                     ),
                   ),
@@ -258,6 +231,38 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
               isSelected: provider.selectedGender == 1,
               onClick: () {
                 provider.changeSelectedGender(1);
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _build3TRadio(InputChildDataProvider provider) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Apakah Anda tinggal di daerah 3T?',
+          style: AppTextStyles.labelText,
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            GenderChip(
+              label: 'Ya',
+              isSelected: provider.is3t,
+              onClick: () {
+                provider.changeIs3t(true);
+              },
+            ),
+            const SizedBox(width: 12),
+            GenderChip(
+              label: 'Tidak',
+              isSelected: !provider.is3t,
+              onClick: () {
+                provider.changeIs3t(false);
               },
             ),
           ],

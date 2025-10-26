@@ -4,6 +4,7 @@ import 'package:capstone_app/screens/common/widgets/custom_card.dart';
 import 'package:capstone_app/screens/common/widgets/custom_divider.dart';
 import 'package:capstone_app/screens/profile/item_menu.dart';
 import 'package:capstone_app/screens/welcome/welcome_page.dart';
+import 'package:capstone_app/utils/whatsapp_utils.dart';
 import 'package:capstone_app/widgets/name_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -68,7 +69,12 @@ class ProfilePage extends StatelessWidget {
                         ItemMenu(
                           label: 'Bantuan',
                           icon: Icons.help_outline_outlined,
-                          onClick: () {},
+                          onClick: () {
+                            openWhatsapp(
+                              context,
+                              provider.user!.displayName ?? '',
+                            );
+                          },
                         ),
                         const DashedDivider(),
                         ItemMenu(
@@ -91,7 +97,7 @@ class ProfilePage extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (context) => const WelcomePage(),
                           ),
-                              (Route<dynamic> route) => false,
+                          (Route<dynamic> route) => false,
                         );
                       }
                     },

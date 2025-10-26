@@ -12,6 +12,7 @@ class AnalysisHistory {
   final DateTime date;
   final double zScore;
   final String zScoreCategory;
+  final bool is3t;
   String? recommendation;
   final NutritionalStatus nutritionalStatus;
   final bool isNewData;
@@ -26,6 +27,7 @@ class AnalysisHistory {
     required this.date,
     required this.zScore,
     required this.zScoreCategory,
+    required this.is3t,
     this.recommendation,
     required this.nutritionalStatus,
     this.isNewData = false,
@@ -42,6 +44,7 @@ class AnalysisHistory {
       date: DateTime.parse(json['date'] as String),
       zScore: json['zScore'] as double,
       zScoreCategory: json['zScoreCategory'] as String,
+      is3t: json['is3t'] as bool,
       recommendation: json['recommendation'] as String?,
       nutritionalStatus: (json['nutritionalStatus'] as String)
           .toNutritionalStatus(),
@@ -59,6 +62,7 @@ class AnalysisHistory {
       'date': date.toIso8601String(),
       'zScore': zScore,
       'zScoreCategory': zScoreCategory,
+      'is3t': is3t,
       'recommendation': recommendation,
       'nutritionalStatus': nutritionalStatus.label,
       'isNewData': isNewData,

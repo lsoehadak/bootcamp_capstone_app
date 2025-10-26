@@ -1,6 +1,7 @@
 import 'package:capstone_app/models/analysis_history.dart';
 import 'package:capstone_app/services/auth_service.dart';
 import 'package:capstone_app/services/firestore_service.dart';
+import 'package:capstone_app/utils/connection_utils.dart';
 import 'package:capstone_app/utils/gen_ai_prompt.dart';
 import 'package:capstone_app/utils/ui_state.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,9 @@ class AnalysisResultProvider extends ChangeNotifier {
       systemInstruction: Content.system(GenAiPrompt.getSystemInstruction()),
     );
 
-    final prompt = GenAiPrompt.getRecommendationPrompt(_analysisHistory);
+    final prompt = _analysisHistory.is3t
+        ? GenAiPrompt.get3TRecommendationPrompt(_analysisHistory)
+        : GenAiPrompt.getRecommendationPrompt(_analysisHistory);
 
     try {
       final content = [Content.text(prompt)];
@@ -65,29 +68,38 @@ class AnalysisResultProvider extends ChangeNotifier {
     _uiState = UiLoadingState();
     notifyListeners();
 
-    await Future.delayed(const Duration(seconds: 1));
-    try {
-      analysisHistory.recommendation = _recommendation;
-      final result = isDataUpdated && !analysisHistory.isNewData
-          ? await _firestoreService.updateAnalysisHistory(
-              _authService.currentUser!.uid,
-              analysisHistory,
-            )
-          : await _firestoreService.saveAnalysisHistory(
-              _authService.currentUser!.uid,
-              analysisHistory,
-            );
-      if (result) {
-        _uiState = UiSuccessState(true);
-      } else {
-        _uiState = UiErrorState(
-          'Terjadi Kesalahan',
-          'Gagal menyimpan hasil analisis',
-        );
+    final isConnected = await checkInternetConnection();
+
+    if (isConnected) {
+      try {
+        analysisHistory.recommendation = _recommendation;
+        final result = isDataUpdated && !analysisHistory.isNewData
+            ? await _firestoreService.updateAnalysisHistory(
+                _authService.currentUser!.uid,
+                analysisHistory,
+              )
+            : await _firestoreService.saveAnalysisHistory(
+                _authService.currentUser!.uid,
+                analysisHistory,
+              );
+        if (result) {
+          _uiState = UiSuccessState(true);
+        } else {
+          _uiState = UiErrorState(
+            'Terjadi Kesalahan',
+            'Gagal menyimpan hasil analisis',
+          );
+        }
+      } catch (e) {
+        _uiState = UiErrorState('Terjadi Kesalahan', e.toString());
+      } finally {
+        notifyListeners();
       }
-    } catch (e) {
-      _uiState = UiErrorState('Terjadi Kesalahan', e.toString());
-    } finally {
+    } else {
+      _uiState = UiErrorState(
+        'Tidak ada koneksi internet',
+        'Silahkan coba lagi dan pastikan perangkat terhubung dengan internet',
+      );
       notifyListeners();
     }
   }

@@ -26,6 +26,10 @@ class InputChildDataProvider extends ChangeNotifier {
 
   int get selectedGender => _selectedGender;
 
+  bool _is3t = true;
+
+  bool get is3t => _is3t;
+
   UiState<AnalysisHistory> _uiState = UiNoneState();
 
   UiState<AnalysisHistory> get uiState => _uiState;
@@ -34,6 +38,12 @@ class InputChildDataProvider extends ChangeNotifier {
     _selectedGender = value;
     notifyListeners();
   }
+
+  void changeIs3t(bool value) {
+    _is3t = value;
+    notifyListeners();
+  }
+
 
   void changeIsAgeInputValid(bool value) {
     _isAgeInputValid = value;
@@ -71,6 +81,7 @@ class InputChildDataProvider extends ChangeNotifier {
         date: DateTime.now(),
         zScore: zScore,
         zScoreCategory: inferenceResult,
+        is3t: _is3t,
         recommendation: null,
         nutritionalStatus: inferenceResult.toNutritionalStatus(),
         isNewData: true,
