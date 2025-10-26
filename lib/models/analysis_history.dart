@@ -15,8 +15,6 @@ class AnalysisHistory {
   final bool is3t;
   String? recommendation;
   final NutritionalStatus nutritionalStatus;
-  final bool isNewData;
-
   AnalysisHistory({
     this.id,
     required this.name,
@@ -27,11 +25,13 @@ class AnalysisHistory {
     required this.date,
     required this.zScore,
     required this.zScoreCategory,
-    required this.is3t,
+    this.is3t = false,
     this.recommendation,
     required this.nutritionalStatus,
     this.isNewData = false,
   });
+
+  final bool isNewData;
 
   factory AnalysisHistory.fromJson(Map<String, dynamic> json, String docId) {
     return AnalysisHistory(

@@ -1,15 +1,19 @@
+import 'package:capstone_app/providers/change_password_provider.dart';
 import 'package:capstone_app/providers/profile_provider.dart';
 import 'package:capstone_app/screens/common/widgets/custom_button.dart';
 import 'package:capstone_app/screens/common/widgets/custom_card.dart';
 import 'package:capstone_app/screens/common/widgets/custom_divider.dart';
+import 'package:capstone_app/screens/common/widgets/custom_snackbar.dart';
 import 'package:capstone_app/screens/profile/item_menu.dart';
 import 'package:capstone_app/screens/welcome/welcome_page.dart';
+import 'package:capstone_app/services/auth_service.dart';
 import 'package:capstone_app/utils/whatsapp_utils.dart';
 import 'package:capstone_app/widgets/name_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/app_text_styles.dart';
+import '../change_password/change_password_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -63,7 +67,30 @@ class ProfilePage extends StatelessWidget {
                         ItemMenu(
                           label: 'Ubah Password',
                           icon: Icons.lock_outline_rounded,
-                          onClick: () {},
+                          onClick: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return ChangeNotifierProvider(
+                                    create: (context) => ChangePasswordProvider(
+                                      context.read<AuthService>(),
+                                    ),
+                                    child: const ChangePasswordPage(),
+                                  );
+                                },
+                              ),
+                            );
+
+                            if (result) {
+                              if (!context.mounted) return;
+                              showSnackBar(
+                                context,
+                                'Berhasil Merubah Password',
+                                'Gunakan password baru yang sudah diganti untuk melakukan login lain kali',
+                              );
+                            }
+                          },
                         ),
                         const DashedDivider(),
                         ItemMenu(

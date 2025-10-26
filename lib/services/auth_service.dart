@@ -72,6 +72,39 @@ class AuthService {
     }
   }
 
+  Future<bool> changePassword(String oldPassword, String newPassword) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    try {
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user!.email!,
+        password: oldPassword,
+      );
+      UserCredential reauthenticated = await user.reauthenticateWithCredential(
+        credential,
+      );
+
+      if (reauthenticated.user != null) {
+        try {
+          await user.updatePassword(newPassword);
+          return true;
+        } on FirebaseAuthException catch (e2) {
+          throw Exception(e2.toString());
+        }
+      } else {
+        throw Exception('User reauthentication failed.');
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-credential') {
+        throw Exception('Password yang dimasukkan salah.');
+      } else {
+        throw Exception(e.toString());
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
   Future<bool> logOut() async {
     try {
       await _auth.signOut();

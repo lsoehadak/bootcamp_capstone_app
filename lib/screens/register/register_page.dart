@@ -29,6 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
     if (resultState is UiErrorState<bool>) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _showErrorMessage(resultState.errorTitle, resultState.errorMessage);
+        context.read<RegisterProvider>().resetState();
       });
     } else if (resultState is UiSuccessState<bool>) {
       WidgetsBinding.instance.addPostFrameCallback((_) {

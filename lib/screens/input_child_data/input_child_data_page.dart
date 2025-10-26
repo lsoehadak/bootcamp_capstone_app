@@ -99,12 +99,6 @@ class _InputChildDataPageState extends State<InputChildDataPage> {
                                     style: AppTextStyles.labelText,
                                   ),
                                   const SizedBox(height: 8),
-                                  // Text(
-                                  //   '* Usia maksimal 60 bulan',
-                                  //   style: AppTextStyles.bodySmallLowEmText
-                                  //       .copyWith(fontSize: 11),
-                                  // ),
-                                  // const SizedBox(height: 12),
                                   CustomDefaultTextField(
                                     controller: _ageController,
                                     hint: '',
